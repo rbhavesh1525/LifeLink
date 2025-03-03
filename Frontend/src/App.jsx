@@ -1,14 +1,20 @@
 
 import './App.css'
-
+import {Home,Signup,Signin} from "./Pages/PageIndex"
+import {Navbar} from "./Components/CompIndex"
+import {Routes,Route,BrowserRouter} from "react-router-dom"
 function App() {
   
 
   return (
     <>
-    <h1 className="text-3xl font-bold underline">
-    Hello world!
-  </h1>
+    <BrowserRouter>
+
+    <Routes>
+
+      <Route path="/" element ={<><Navbar/><Home/></>}/>
+    </Routes>
+    </BrowserRouter>
       
     </>
   )
