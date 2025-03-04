@@ -1,0 +1,26 @@
+authentication ( O auth)
+
+ user side 
+
+1) page like a porter which includes option such as -> https://www.urbancompany.com/pune  (we will give options what are you looking for )
+
+-> on clicking of any option will show them nearest active tempo
+ui will be like -> https://www.justdial.com/Pune/MD-Doctors-in-Chinchwad/nct-12363711  we will display active tempo with name,number driver details etc (other they will talk on call )
+
+-> dashboard for each tempo user (from where tempo driver will update tempo status active not active and all)
+
+-> there gonna be 2 login ( login as a tempo  , login as a user )
+
+-> monthly subscription for tempo driver so payment setup 
+
+-> real time notification
+
+3) admin panel
+
+-all user listed
+
+-payment setup
+
+-reports regarding tempo 
+
+- block tempo 
