@@ -1,7 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
+import { FaGoogle, FaFacebook } from "react-icons/fa";
+import {showToast} from "../Components/Toast"
+import "react-toastify/dist/ReactToastify.css";
 
-function Signup() {
+
+function Signup() { 
+  const [ iserror,setIsError ] = useState("");
   const [signupData, setSignupData] = useState({
     firstName: "",
     lastName: "",
@@ -12,14 +17,22 @@ function Signup() {
 
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
+    setIsError("");
+    
     try {
-      const response = await axios.post("", signupData);
+      const response = await axios.post("http://localhost:5000/api/auth/signup", signupData);
       console.log("Signup successful:", response.data);
-      alert("Signup Successful!");
+      showToast("🎉 Signup Successful!", "success");
+      
     } catch (error) {
-      console.error("Error signing up:", error);
-      alert("Signup Failed. Please try again.");
+      console.error("❌ Error signing up:", error);
+      
+      const errorMessage = error.response?.data?.message || "Signup Failed. Please try again.";
+      
+      setIsError(errorMessage); 
+      showToast(`❌ ${errorMessage}`, "error");
     }
+    
   };
 
   const handleChange = (e) => {
@@ -28,10 +41,11 @@ function Signup() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-400 to-purple-500">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-96 relative">
+        <button className="absolute top-3 right-3 text-gray-500 text-xl">&times;</button>
         <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
-        <form onSubmit={handleSignupSubmit} className="space-y-4">
+        <form onSubmit={handleSignupSubmit} className="space-y-5">
           <input
             type="text"
             placeholder="First Name"
@@ -56,7 +70,8 @@ function Signup() {
           >
             <option value="">Registering as</option>
             <option value="User">User</option>
-            <option value="TempoDriver">Tempo Driver</option>
+            <option value="Hospital">Hospital</option>
+            <option value="Ambulance">Ambulance</option>
           </select>
           <input
             type="email"
@@ -76,11 +91,22 @@ function Signup() {
           />
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+            className="w-full bg-gradient-to-r from-blue-400 to-purple-500 text-white py-2 rounded-lg hover:opacity-90 mt-4"
           >
             Register
           </button>
         </form>
+        <div className="flex justify-center space-x-4 mt-6">
+          <button className="flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-gray-600 hover:bg-gray-100">
+            <FaGoogle className="mr-2 text-blue-500" /> Google
+          </button>
+          <button className="flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-gray-600 hover:bg-gray-100">
+            <FaFacebook className="mr-2 text-blue-600" /> Facebook
+          </button>
+        </div>
+        <p className="text-center text-sm mt-6">
+          Already have an account? <a href="/signin" className="text-blue-500">Login</a>
+        </p>
       </div>
     </div>
   );
