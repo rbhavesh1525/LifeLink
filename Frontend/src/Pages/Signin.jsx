@@ -3,7 +3,7 @@ import axios from "axios";
 import { showToast } from "../Components/Toast";
 
 function Signin() {
-  const [error, setError] = useState("");
+  const [message,setMessage] = useState("");
   const [signinData, setSigninData] = useState({
     email: "",
     password: "",
@@ -11,20 +11,23 @@ function Signin() {
 
   const handleSignin = async (e) => {
     e.preventDefault();
-    setError(""); // Reset error on new attempt
+    setMessage("");
+    
 
     try {
       const response = await axios.post("http://localhost:5000/api/auth/signin", signinData);
       console.log("Signin successful:", response.data);
+     
       
       showToast(" 🎉 Signin Successful!", "success");
+      setMessage("Redirecting you to homepage")
       
       const token = response.data.token;
       localStorage.setItem("token", token);
 
       // Redirect after successful login
       setTimeout(() => {
-        window.location.href = "/home"; 
+        window.location.href = '/'; 
       }, 3000);
       
     } catch (error) {
@@ -49,9 +52,9 @@ function Signin() {
         <h2 className="text-2xl font-bold mb-6 text-center">Login Form</h2>
         <form onSubmit={handleSignin} className="space-y-4">
           
-          {/* {error && (
-            <p className="text-red-500 text-2xl">{error}</p>
-          )} */}
+          {message && (
+            <p className="text-green-500 text-2xl">{message}</p>
+          )}
 
           <div>
             <label className="block text-gray-600">Email or Phone</label>

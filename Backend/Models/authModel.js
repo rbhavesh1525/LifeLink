@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
       registeringAs: {
         type: String,
         required: [true, "Registering type is required"],
-        enum: ["User", "TempoDriver"], // Restricting to these values
+        enum: ["User", "Ambulance","Hospital"], 
       },
       email: {
         type: String,
@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
       password: {
         type: String,
         required: [true, "Password is required"],
-        minlength: 6, // Minimum password length
+        minlength: 6,
       },
     },
     
