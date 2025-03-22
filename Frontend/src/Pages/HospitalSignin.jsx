@@ -3,11 +3,11 @@ import axios from "axios";
 import { showToast } from "../Components/Toast";
 import useAuthStore from "../Store/authStore";
 
-function Signin() {
+function HospitalSignin() {
   const [message, setMessage] = useState("");
   const [signinData, setSigninData] = useState({
-    email: "",
-    password: "",
+    hospitalEmail: "",
+    hospitalPassword: "",
   });
 
   const { login } = useAuthStore();
@@ -18,7 +18,7 @@ function Signin() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/signin",
+        "http://localhost:5000/api/auth/hospital-signin",
         signinData
       );
 
@@ -30,7 +30,7 @@ function Signin() {
 
       // Redirect after successful login
       setTimeout(() => {
-        window.location.href = "/";
+        window.location.href = "/hospital-homepage";
       }, 3000);
     } catch (error) {
       console.error("Unable to login:", error);
@@ -53,17 +53,17 @@ function Signin() {
         <button className="absolute top-3 right-3 text-gray-500 text-xl">
           &times;
         </button>
-        <h2 className="text-2xl font-bold mb-6 text-center">Login Form</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Hospital Login</h2>
         <form onSubmit={handleSignin} className="space-y-4">
           {message && <p className="text-green-500 text-2xl">{message}</p>}
 
           <div>
-            <label className="block text-gray-600">Email or Phone</label>
+            <label className="block text-gray-600">Hospital Email</label>
             <input
               type="email"
-              placeholder="Enter your Email"
-              name="email"
-              value={signinData.email}
+              placeholder="Enter Hospital Email"
+              name="hospitalEmail"
+              value={signinData.hospitalEmail}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-lg mt-1"
               required
@@ -73,9 +73,9 @@ function Signin() {
             <label className="block text-gray-600">Password</label>
             <input
               type="password"
-              placeholder="Enter your password"
-              name="password"
-              value={signinData.password}
+              placeholder="Enter password"
+              name="hospitalPassword"
+              value={signinData.hospitalPassword}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-lg mt-1"
               required
@@ -95,7 +95,7 @@ function Signin() {
         </form>
         <p className="text-center text-sm mt-4">
           Not a member?{" "}
-          <a href="/signup" className="text-blue-500 cursor-pointer">
+          <a href="/hospital-signup" className="text-blue-500 cursor-pointer">
             Signup now
           </a>
         </p>
@@ -104,4 +104,4 @@ function Signin() {
   );
 }
 
-export default Signin;
+export default HospitalSignin;

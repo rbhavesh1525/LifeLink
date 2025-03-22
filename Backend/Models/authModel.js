@@ -14,11 +14,6 @@ const userSchema = new mongoose.Schema({
         trim: true,
         
       },
-      registeringAs: {
-        type: String,
-        required: [true, "Registering type is required"],
-        enum: ["User", "Ambulance","Hospital"], 
-      },
       email: {
         type: String,
         required: [true, "Email is required"],

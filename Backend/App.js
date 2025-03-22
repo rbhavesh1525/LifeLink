@@ -7,7 +7,11 @@ const authroutes = require('./Routes/authRoutes')
 const cors = require('cors');
 const port = process.env.PORT || 5000;
 
-
+// const generateSecretKey = (length = 32) => {
+//     return crypto.randomBytes(length).toString("hex");
+//   };
+  
+//   console.log("Generated Secret Key:", generateSecretKey(64));
 
 app.use(express.json()); 
 
