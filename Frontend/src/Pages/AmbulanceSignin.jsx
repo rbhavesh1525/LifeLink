@@ -6,8 +6,8 @@ import useAuthStore from "../Store/authStore";
 function AmbulanceSignin() {
   const [message, setMessage] = useState("");
   const [signinData, setSigninData] = useState({
-    ambulanceemail: "",
-    ambulancepassword: "",
+    driverEmail: "",
+    driverPassword: "",
   });
 
   const { login } = useAuthStore();
@@ -30,7 +30,7 @@ function AmbulanceSignin() {
 
       // Redirect after successful login
       setTimeout(() => {
-        window.location.href = "/";
+        window.location.href = "/AmbulanceHomepage";
       }, 3000);
     } catch (error) {
       console.error("Unable to login:", error);
@@ -61,21 +61,21 @@ function AmbulanceSignin() {
             <label className="block text-gray-600">Driver Email</label>
             <input
               type="email"
-              placeholder="Enter your Email"
-              name="ambulanceemail"
-              value={signinData.ambulanceemail}
+              placeholder="Enter Driver Email"
+              name="driverEmail"
+              value={signinData.driverEmail}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-lg mt-1"
               required
             />
           </div>
           <div>
-            <label className="block text-gray-600">Password</label>
+            <label className="block text-gray-600">Driver Password</label>
             <input
               type="password"
               placeholder="Enter your password"
-              name="ambulancepassword"
-              value={signinData.ambulancepassword}
+              name="driverPassword"
+              value={signinData.driverPassword}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-lg mt-1"
               required

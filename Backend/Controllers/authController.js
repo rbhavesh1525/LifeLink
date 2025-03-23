@@ -2,6 +2,8 @@ const express = require('express');
 const bcrypt = require('bcryptjs')
 const User = require('../Models/authModel')
 const Hospital = require('../Models/HospitalAuthModel');
+const Ambulance = require('../Models/AmbulanceAuthModel');
+const upload = require('../Middleware/upload');
 const jwt = require('jsonwebtoken');
 
 require('dotenv').config();
@@ -10,6 +12,7 @@ require('dotenv').config();
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 const HOSPITAL_SECRET_KEY = process.env.HOSPITAL_SECRET_KEY;
+const AMBULANCE_SECRET_KEY = process.env.AMBULANCE_SECRET_KEY;
 
 const UserSignup = async (req, res) => {
     try {
@@ -103,7 +106,7 @@ const registerHospital = async (req, res) => {
         const hashedPassword = await bcrypt.hash(hospitalPassword, 10);
 
         // Create new hospital
-        hospital = new Hospital({
+       const newhospital = new Hospital({
             hospitalName,
             hospitalType,
             hospitalRegistrationNumber,
@@ -116,7 +119,7 @@ const registerHospital = async (req, res) => {
         });
         
 
-        await hospital.save();
+        await newhospital.save();
         res.status(201).json({ message: "Hospital registered successfully" });
 
     } catch (error) {
@@ -133,22 +136,22 @@ const loginHospital = async (req, res) => {
     try {
         const { hospitalEmail, hospitalPassword } = req.body;
 
-        // Check if hospital exists
+       
         const hospital = await Hospital.findOne({ hospitalEmail });
         if (!hospital) {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
-        // Compare passwords
+        
         const isMatch = await bcrypt.compare(hospitalPassword, hospital.hospitalPassword);
         if (!isMatch) {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
-        // Generate JWT token
+       
         const token = jwt.sign(
-            { id: hospital._id, role: "hospital" },  // Added role for future authorization
-            HOSPITAL_SECRET_KEY,         // Use environment variable
+            { id: hospital._id, role: "hospital" },  
+            HOSPITAL_SECRET_KEY,         
             { expiresIn: "1h" }
         );
 
@@ -169,7 +172,72 @@ const loginHospital = async (req, res) => {
 };
 
 
+//ambulance resgitration
+
+const registerAmbulance = async (req, res) => {
+    try {
+      console.log("Uploaded File:", req.file);  // Debugging
+      console.log("Request Body:", req.body); 
+  
+      if (!req.file) {
+        return res.status(400).json({ message: "File upload failed" });
+      }
+  
+        const hashedPassword = await bcrypt.hash(req.body.driverPassword, 10);
+
+      // Create new ambulance
+      const newAmbulance = new Ambulance({
+        driverName: req.body.driverName,
+        driverEmail: req.body.driverEmail,
+        driverAddress: req.body.driverAddress,
+        driverLicense: req.file.path,  
+        driverExperience: req.body.driverExperience,
+        ambulanceNumber: req.body.ambulanceNumber,
+        ambulanceType: req.body.ambulanceType,
+        vehicleName: req.body.vehicleName,
+        contactNumber: req.body.contactNumber,
+        operatingArea: req.body.operatingArea,
+        driverPassword:hashedPassword,
+      });
+  
+      await newAmbulance.save();
+      res.status(201).json({ message: "Ambulance registered successfully!" });
+    } catch (error) {
+      console.error("Registration Error:", error);
+      res.status(500).json({ message: "Server Error", error });
+    }
+  };
+  
+  
+  // ✅ **2. Login Ambulance**
+  const loginAmbulance = async (req, res) => {
+    try {
+      const { driverEmail, driverPassword } = req.body;
+  
+      // Check if ambulance exists
+      const ambulance = await Ambulance.findOne({ driverEmail });
+      if (!ambulance) {
+        return res.status(404).json({ message: "Ambulance not found" });
+      }
+  
+      // Compare passwords
+      const isMatch = await bcrypt.compare(driverPassword, ambulance.driverPassword);
+      if (!isMatch) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+  
+      // Generate JWT token
+      const token = jwt.sign({ id: ambulance._id, driverEmail: ambulance.driverEmail }, AMBULANCE_SECRET_KEY, { expiresIn: "1h" });
+  
+      res.status(200).json({ message: "Login successful", token });
+    } catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({ message: "Error in login", error: error.message });
+      }
+  };
 
 
 
-module.exports = { UserSignup, UserSignin, registerHospital, loginHospital }
+
+
+module.exports = { UserSignup, UserSignin, registerHospital, loginHospital, registerAmbulance, loginAmbulance }

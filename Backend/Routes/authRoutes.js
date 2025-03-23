@@ -1,10 +1,10 @@
 const express = require('express');
 
 const router = express.Router();
+const upload = require('../Middleware/upload');
 
 
-
-const {UserSignin, UserSignup,registerHospital,loginHospital} = require('../Controllers/authController')
+const {UserSignin, UserSignup,registerHospital,loginHospital,registerAmbulance,loginAmbulance} = require('../Controllers/authController')
 
 //user routes
 router.post('/user-signup',UserSignup);
@@ -19,8 +19,8 @@ router.post('/hospital-signin',loginHospital)
 
 //Ambulance auth routes
 
-router.post('/ambulance-signup',)
+router.post('/ambulance-signup',upload.single("driverLicense"),   registerAmbulance)
 
-router.post('/ambulance-signin',)
+router.post('/ambulance-signin',loginAmbulance)
 
 module.exports = router;

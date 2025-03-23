@@ -3,12 +3,19 @@
 import { useState } from "react";
 import axios from "axios";
 import { Car, User } from "lucide-react";
+import {showToast} from "../Components/Toast"
+import "react-toastify/dist/ReactToastify.css";
 
 function AmbulanceSignup() {
+  const [message,setMessage] = useState("");
+  const [error,setError] = useState("");
   const [ambulanceData, setAmbulanceData] = useState({
     driverName: "",
+    
     driverAddress: "",
     driverLicense: "",
+    driverEmail: "",
+    driverPassword:"",
     driverExperience: "",
     ambulanceNumber: "",
     ambulanceType: "",
@@ -18,19 +25,52 @@ function AmbulanceSignup() {
   });
 
   const handleOnChange = (e) => {
-    const { name, value } = e.target;
-    setAmbulanceData({ ...ambulanceData, [name]: value });
+    const { name, value, files, type } = e.target;
+    if (type === "file" && files?.length) {
+      // Store the File object in state
+      setAmbulanceData((prev) => ({ ...prev, [name]: files[0] }));
+    } else {
+      // Store text input
+      setAmbulanceData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleAmbulanceDataSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setMessage("");
+
     try {
-      const response = await axios.post("YOUR_API_ENDPOINT", ambulanceData);
-      console.log(response.data);
+      // ✅ Create FormData
+      const formData = new FormData();
+
+      // Append all fields from ambulanceData
+      Object.keys(ambulanceData).forEach((key) => {
+        formData.append(key, ambulanceData[key]);
+      });
+
+      // ✅ POST to server as multipart/form-data
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/ambulance-signup",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Response:", response.data);
+      setMessage("Ambulance Signup Successful! You can login now");
+      showToast("Ambulance Signup Successful!", "success");
+
+      // ✅ Reset form state
       setAmbulanceData({
         driverName: "",
+        driverEmail: "",
+        driverPassword: "",
         driverAddress: "",
-        driverLicense: "",
+        driverLicense: null, // Clear file
         driverExperience: "",
         ambulanceNumber: "",
         ambulanceType: "",
@@ -40,13 +80,23 @@ function AmbulanceSignup() {
       });
     } catch (error) {
       console.error("Error submitting ambulance details:", error);
+      const errormessage = error.response?.data?.message || "Signup Failed. Please try again.";
+      setError(errormessage);
+      showToast(`❌ ${errormessage}`, "error");
     }
   };
+  
 
   return (
     <div className="container mx-auto max-w-5xl py-8 px-4">
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold text-purple-800 mb-2">Signup As Ambulance</h1>
+        {error && (
+          <div className="text-red-500 text-sm">{error}</div>
+        )}
+        {message && (
+          <div className="text-green-500 text-sm">{message}</div>
+        )}
       </div>
 
       <form onSubmit={handleAmbulanceDataSubmit}>
@@ -73,6 +123,8 @@ function AmbulanceSignup() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
+
+              
 
               <div>
                 <label htmlFor="driver_address" className="block text-sm font-medium mb-2">
@@ -103,6 +155,7 @@ function AmbulanceSignup() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
+              
 
               <div>
                 <label htmlFor="driver_experience" className="block text-sm font-medium mb-2">
@@ -113,6 +166,34 @@ function AmbulanceSignup() {
                   id="driver_experience"
                   name="driverExperience"
                   value={ambulanceData.driverExperience}
+                  onChange={handleOnChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="driver_email" className="block text-sm font-medium mb-2">
+                  Driver Email
+                </label>
+                <input
+                  type="text"
+                  id="driver_email"
+                  name="driverEmail"
+                  value={ambulanceData.driverEmail}
+                  onChange={handleOnChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="driver_password" className="block text-sm font-medium mb-2">
+                  Driver Password
+                </label>
+                <input
+                  type="text"
+                  id="driver_password"
+                  name="driverPassword"
+                  value={ambulanceData.driverPassword}
                   onChange={handleOnChange}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
