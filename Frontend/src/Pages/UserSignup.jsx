@@ -5,12 +5,12 @@ import {showToast} from "../Components/Toast"
 import "react-toastify/dist/ReactToastify.css";
 
 
-function Signup() { 
+function UserSignup() { 
   const [ iserror,setIsError ] = useState("");
   const [signupData, setSignupData] = useState({
     firstName: "",
     lastName: "",
-    registeringAs: "",
+    
     email: "",
     password: "",
   });
@@ -20,7 +20,7 @@ function Signup() {
     setIsError("");
     
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/signup", signupData);
+      const response = await axios.post("http://localhost:5000/api/auth/user-signup", signupData);
       console.log("Signup successful:", response.data);
       showToast("🎉 Signup Successful!", "success");
       
@@ -28,6 +28,7 @@ function Signup() {
       console.error("❌ Error signing up:", error);
       
       const errorMessage = error.response?.data?.message || "Signup Failed. Please try again.";
+      console.log(errorMessage);
       
       setIsError(errorMessage); 
       showToast(`❌ ${errorMessage}`, "error");
@@ -45,6 +46,10 @@ function Signup() {
       <div className="bg-white p-8 rounded-lg shadow-lg w-96 relative">
         <button className="absolute top-3 right-3 text-gray-500 text-xl">&times;</button>
         <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+
+        {iserror &&(
+          <p className="text-red-500">{iserror}</p>
+        )}
         <form onSubmit={handleSignupSubmit} className="space-y-5">
           <input
             type="text"
@@ -62,17 +67,7 @@ function Signup() {
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-lg"
           />
-          <select
-            name="registeringAs"
-            value={signupData.registeringAs}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-lg"
-          >
-            <option value="">Registering as</option>
-            <option value="User">User</option>
-            <option value="Hospital">Hospital</option>
-            <option value="Ambulance">Ambulance</option>
-          </select>
+          
           <input
             type="email"
             placeholder="Enter your Email"
@@ -105,11 +100,11 @@ function Signup() {
           </button>
         </div>
         <p className="text-center text-sm mt-6">
-          Already have an account? <a href="/signin" className="text-blue-500">Login</a>
+          Already have an account? <a href="/user-signin" className="text-blue-500">Login</a>
         </p>
       </div>
     </div>
   );
 }
 
-export default Signup;
+export default UserSignup;
