@@ -89,7 +89,9 @@ const registerHospital = async (req, res) => {
             hospitalWebsite,
             hospitalPassword
         } = req.body;
-
+        if (!hospitalType) {
+            return res.status(400).json({ message: "Hospital type is required" });
+        }
         // Check if hospital already exists
         let existingHospital = await Hospital.findOne({ 
             $or: [

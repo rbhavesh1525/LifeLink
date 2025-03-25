@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { showToast } from "../Components/Toast";
 import useAuthStore from "../Store/authStore";
+import { useNavigate } from "react-router-dom";
 
 function HospitalSignin() {
   const [message, setMessage] = useState("");
@@ -11,6 +12,7 @@ function HospitalSignin() {
   });
 
   const { login } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleSignin = async (e) => {
     e.preventDefault();
@@ -28,9 +30,9 @@ function HospitalSignin() {
       showToast(" 🎉 Signin Successful!", "success");
       setMessage("Redirecting you to homepage");
 
-      // Redirect after successful login
+      // Use React Router navigation instead of window.location
       setTimeout(() => {
-        window.location.href = "/hospital-homepage";
+        navigate("/hospital-homepage");
       }, 3000);
     } catch (error) {
       console.error("Unable to login:", error);
