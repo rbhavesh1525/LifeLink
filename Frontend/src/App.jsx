@@ -27,7 +27,7 @@ function App() {
       <Route path='/staff-info' element={<><Navbar/><Staffinfo/></>}/>
       <Route path='/transfer-patient' element={<><Navbar/><TransferPatient/></>}/>
       <Route path='/update-bed-status' element={<><Navbar/><UpdateBedStatus/></>}/>
-      <Route path='/update-hospital-profile' element={<><Navbar/><UpdateHospitalProfile/></>}/>
+      <Route path='/update-hospital-profile'element={<><Navbar/><UpdateHospitalProfile/></>}/>
     
     </Routes>
     <ToastContainer position="top-right" autoClose={3000} />

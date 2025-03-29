@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import useAuthStore from "../Store/authStore";
 import { useNavigate } from "react-router-dom";
 
-// Set axios default base URL
+
 axios.defaults.baseURL = 'http://localhost:5000';
 
 // Mapping between frontend bed types and backend model fields
@@ -53,7 +53,7 @@ function UpdateBedStatus() {
   const user = useAuthStore((state) => state.user);
   const navigate = useNavigate();
 
-  // Check authentication on component mount
+
   useEffect(() => {
     if (!user?.id) {
       toast.error("Please login to access this page");
@@ -62,7 +62,7 @@ function UpdateBedStatus() {
     }
   }, [user, navigate]);
 
-  // Fetch current bed data on component mount
+ 
   useEffect(() => {
     const fetchBedData = async () => {
       if (!user?.id) {
@@ -103,7 +103,7 @@ function UpdateBedStatus() {
   };
 
   const handleModalSave = () => {
-    // Update local state
+    
     setBedsData((prevData) => ({
       ...prevData,
       [selectedBed.type]: selectedBed.value,

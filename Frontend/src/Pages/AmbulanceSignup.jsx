@@ -11,7 +11,6 @@ function AmbulanceSignup() {
   const [error,setError] = useState("");
   const [ambulanceData, setAmbulanceData] = useState({
     driverName: "",
-    
     driverAddress: "",
     driverLicense: "",
     driverEmail: "",
@@ -27,10 +26,10 @@ function AmbulanceSignup() {
   const handleOnChange = (e) => {
     const { name, value, files, type } = e.target;
     if (type === "file" && files?.length) {
-      // Store the File object in state
+      
       setAmbulanceData((prev) => ({ ...prev, [name]: files[0] }));
     } else {
-      // Store text input
+     
       setAmbulanceData((prev) => ({ ...prev, [name]: value }));
     }
   };

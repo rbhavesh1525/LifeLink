@@ -26,7 +26,8 @@ function HospitalSignin() {
 
       console.log("Signin successful:", response.data);
 
-      login(response.data.user, response.data.token); // Use zustand login function
+      login(response.data.user, response.data.token,response.data.user.id); 
+     
       showToast(" 🎉 Signin Successful!", "success");
       setMessage("Redirecting you to homepage");
 
