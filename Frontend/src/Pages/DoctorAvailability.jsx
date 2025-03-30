@@ -1,46 +1,85 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {axios} from 'axios';
 import { FaUserMd, FaTimesCircle, FaPlus } from "react-icons/fa";
+import { response } from "express";
 
 const DoctorAvailability = () => {
-  const [doctors, setDoctors] = useState([
-    { id: 1, name: "Dr. Sarah Johnson", specialization: "Cardiologist", status: "AVAILABLE", note: "-" },
-    { id: 2, name: "Dr. Michael Chen", specialization: "Neurologist", status: "UNAVAILABLE", note: "Out of town until next week" },
-    { id: 3, name: "Dr. Emily Brown", specialization: "Pediatrician", status: "EMERGENCY", note: "At City General Hospital for emergency surgery" },
-  ]);
+  const [doctors, setDoctors] = useState([]);
 
   const [newDoctor, setNewDoctor] = useState({ name: "", specialization: "" });
   const [noteInput, setNoteInput] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const handleStatusChange = (id, newStatus) => {
-    setDoctors((prevDoctors) =>
-      prevDoctors.map((doctor) =>
-        doctor.id === id ? { ...doctor, status: newStatus } : doctor
-      )
-    );
-  };
+useEffect(()=>{
+  axios.get('http://localhost:5000/api/fetch-doctors')
+  .then(response=>setDoctors(response.data))
+  .catch(error=>console.error("Error fetching doctors",error));
+  console.log(response.data)
+})
 
-  const handleOpenNotePopup = (doctor) => {
-    setSelectedDoctor(doctor);
-    setNoteInput(doctor.note);
-    setIsPopupOpen(true);
-  };
 
-  const handleSaveNote = () => {
-    setDoctors((prevDoctors) =>
-      prevDoctors.map((doctor) =>
-        doctor.id === selectedDoctor.id ? { ...doctor, note: noteInput } : doctor
-      )
-    );
-    setIsPopupOpen(false);
-  };
 
-  const handleAddDoctor = () => {
-    if (newDoctor.name && newDoctor.specialization) {
-      setDoctors([...doctors, { id: doctors.length + 1, ...newDoctor, status: "AVAILABLE", note: "-" }]);
-      setNewDoctor({ name: "", specialization: "" });
+
+  // const handleOpenNotePopup = (doctor) => {
+  //   setSelectedDoctor(doctor);
+  //   setNoteInput(doctor.note);
+  //   setIsPopupOpen(true);
+  // };
+
+  // const handleSaveNote = () => {
+  //   setDoctors((prevDoctors) =>
+  //     prevDoctors.map((doctor) =>
+  //       doctor.id === selectedDoctor.id ? { ...doctor, note: noteInput } : doctor
+  //     )
+  //   );
+  //   setIsPopupOpen(false);
+  // };
+
+  const handleAddDoctor = async() => {
+   
+      if(newDoctor.name && newDoctor.specialization){
+        try{
+
+              const response = await axios.post('http://localhost/api/add-doctor',{...newDoctor,status:"AVAILABLE",note:"-"})
+              setDoctors([...doctors,response.data]);
+              setNewDoctor({name:"",specialization:""});
+        }catch(error){
+            console.error("error adding doctor : ",error);
+        }
+      }
+  }
+
+  const handleStatusChange=async(id,newStatus)=>{
+    try{
+
+    
+     await axios.put(`http://localhost:5000/api/update-doctor-status/${id}/status`,{status:newStatus});
+      setDoctors((prevDoctors)=>{
+        prevDoctors.map((doctor)=>{
+          doctor.id ==id? {...doctor,status:newStatus}:doctor
+        })
+      })
+    }catch(error){
+      console.error("Error updating status",error)
     }
+  };
+
+
+  const handleSaveNote=async()=>{
+      if(!selectedDoctor) return;
+
+      try {
+        await axios.put(`http://localhost/5000/api/update-doctor-Note/selectedDoctor.id/note`,{note:noteInput})
+        setDoctors((prevDoctors)=>
+          prevDoctors.map((doctor)=>
+            doctor.id ==selectedDoctor.id ? {...doctor,note:noteInput}:doctor
+          )
+        )
+        setIsPopupOpen(false);
+      } catch (error) {
+        console.error("Error updating note",error)
+      }
   };
 
   return (
