@@ -5,7 +5,10 @@ const router = express.Router();
 const {AddDoctor,fetchDoctors,UpdateDoctorNote,UpdateDoctorStatus} = require('../Controllers/DoctorController');
 
 
-router.post('/api/add-doctor',AddDoctor)
-router.get('/api/fetch-doctors',fetchDoctors)
-router.put('/api/update-doctor-Note',UpdateDoctorNote)
-router.put('/api/update-doctor-status',UpdateDoctorStatus)
+router.post('/add-doctor',AddDoctor)
+router.get('/fetch-doctors',fetchDoctors)
+router.put('/update-doctor-Note/:id/note',UpdateDoctorNote)
+router.put('/update-doctor-status/:id/status',UpdateDoctorStatus)
+
+
+module.exports= router;

@@ -6,7 +6,7 @@ try {
     const doctors = await Doctor.find();
     res.status(200).json(doctors);
 } catch (error) {
-    res.status(500).json({message:"server error while fetching doctors", error})
+    res.status(500).json({message:"server error while fetching doctors", error:error.message})
 }
 }
 
@@ -24,16 +24,17 @@ try {
     res.status(201).json(saveDoctor);
 } catch (error) {
     res.status(500).json({message:"error adding doctor",error});
+    console.error(error);
 }
 }
 
 
 
 
-const UpdateDoctorStatus =async()=>{
+const UpdateDoctorStatus =async(req,res)=>{
 
     const {id} = req.params;
-    const {status} = req.status;
+    const {status} = req.body;
 
     if (!status) {
         return res.status(400).json({ message: "Status is required" });
@@ -54,7 +55,7 @@ const UpdateDoctorStatus =async()=>{
 }
 
 
-const UpdateDoctorNote=async()=>{
+const UpdateDoctorNote=async(req,res)=>{
     const { id } = req.params;
     const { note } = req.body;
   

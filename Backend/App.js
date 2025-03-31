@@ -5,6 +5,7 @@ const connectdb = require("./dbconfig/dbconfig")
 const app = express();
 const authroutes = require('./Routes/authRoutes')
 const hospitalRoutes = require('./Routes/HospitalRoutes')
+const doctorRoutes = require('./Routes/DoctorRoutes')
 const cors = require('cors');
 const port = process.env.PORT || 5000;
 
@@ -18,7 +19,7 @@ app.use(express.json());
 
 app.use(cors());
 app.use('/api/auth',authroutes);
-
+app.use('/api',doctorRoutes);
 app.use('/api',hospitalRoutes);
 
 
