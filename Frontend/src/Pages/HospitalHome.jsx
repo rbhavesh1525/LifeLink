@@ -61,10 +61,11 @@ const HospitalServicesDashboard = () => {
         <div className="text-4xl">🛏️</div>
         <h2 className="text-lg font-semibold text-center mt-4">Update Bed Status</h2>
         <p className="text-gray-600 text-center mt-2 pb-5">View and update bed status.</p>
-        <Link to="/update-bed-status"></Link>
+        <Link to="/update-bed-status">
         <button className="w-40 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer mt-6">
           Update Status
         </button>
+        </Link>
       </div>
 
      

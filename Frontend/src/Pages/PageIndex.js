@@ -14,8 +14,9 @@ import UpdateBedStatus from "./UpdateBedStatus";
 import UpdateHospitalProfile from "./UpdateHospitalProfile";
 import HospitalHome from "./HospitalHome";
 import UserHomepage from "./UserHomePage";
+import AmbulanceHomepage from "./AmbulanceHomepage";
 
 
 
 
-export {HospitalHome,UserHomepage, UserSignin, UserSignup, PatientTransferRecords, TransferPatient, Staffinfo, UpdateBedStatus, UpdateHospitalProfile, DoctorAvailability, SigninAs, AmbulanceSignin, AmbulanceSignup, HospitalSignin, HospitalSignup }
+export {HospitalHome,UserHomepage, UserSignin, UserSignup, PatientTransferRecords, TransferPatient, Staffinfo, UpdateBedStatus, UpdateHospitalProfile, DoctorAvailability, SigninAs, AmbulanceHomepage, AmbulanceSignin, AmbulanceSignup, HospitalSignin, HospitalSignup }

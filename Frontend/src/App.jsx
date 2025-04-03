@@ -1,10 +1,13 @@
 
 import './App.css'
-import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,Staffinfo,TransferPatient,UpdateBedStatus,UpdateHospitalProfile,DoctorAvailability,SigninAs,HospitalSignin,HospitalSignup,AmbulanceSignin,AmbulanceSignup} from "./Pages/PageIndex"
+import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,Staffinfo,TransferPatient,UpdateBedStatus,UpdateHospitalProfile,DoctorAvailability,SigninAs,HospitalSignin,HospitalSignup,AmbulanceSignin,AmbulanceSignup,AmbulanceHomepage} from "./Pages/PageIndex"
 import {Navbar} from "./Components/CompIndex"
 import {Routes,Route,BrowserRouter} from "react-router-dom"
 import { ToastContainer } from "react-toastify";
+import { Navigate } from "react-router-dom";
+
 function App() {
+  
   
 
   return (
@@ -12,7 +15,7 @@ function App() {
     <BrowserRouter>
 
     <Routes>
-
+      <Route path='*' element={<Navigate  to="/"/>}/>
       <Route path='/'element ={<><Navbar/><UserHomepage/></>}/>
       <Route path="/hospital-homepage" element ={<><Navbar/><HospitalHome/></>}/>
       <Route path='/signing-as' element={<SigninAs/>}/>
@@ -20,6 +23,7 @@ function App() {
       <Route path='/user-signin' element={<UserSignin/>}/>
       <Route path='/hospital-signup' element={<HospitalSignup/>}/>
       <Route path='/hospital-signin' element={<HospitalSignin/>}/>
+     < Route path='/ambulance-signup'  element={<><AmbulanceHomepage/></>} />
       <Route path='/ambulance-signup' element={<AmbulanceSignup/>}/> 
       <Route path='/ambulance-signin' element={<AmbulanceSignin/>}/>
       <Route path='/doctor-availability' element={<><Navbar/><DoctorAvailability/></>}/>
