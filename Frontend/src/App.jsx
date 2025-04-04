@@ -1,6 +1,6 @@
 
 import './App.css'
-import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,Staffinfo,TransferPatient,UpdateBedStatus,UpdateHospitalProfile,DoctorAvailability,SigninAs,HospitalSignin,HospitalSignup,AmbulanceSignin,AmbulanceSignup,AmbulanceHomepage} from "./Pages/PageIndex"
+import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,Staffinfo,TransferPatient,UpdateBedStatus,UpdateHospitalProfile,DoctorAvailability,SigninAs,HospitalSignin,HospitalSignup,AmbulanceSignin,AmbulanceSignup,AmbulanceHomepage, HospitalChat, Chat} from "./Pages/PageIndex"
 import {Navbar} from "./Components/CompIndex"
 import {Routes,Route,BrowserRouter} from "react-router-dom"
 import { ToastContainer } from "react-toastify";
@@ -23,6 +23,7 @@ function App() {
       <Route path='/user-signin' element={<UserSignin/>}/>
       <Route path='/hospital-signup' element={<HospitalSignup/>}/>
       <Route path='/hospital-signin' element={<HospitalSignin/>}/>
+      <Route path='/hospital-chat' element={<><HospitalChat/></>}/>
      < Route path='/ambulance-signup'  element={<><AmbulanceHomepage/></>} />
       <Route path='/ambulance-signup' element={<AmbulanceSignup/>}/> 
       <Route path='/ambulance-signin' element={<AmbulanceSignin/>}/>
@@ -32,6 +33,8 @@ function App() {
       <Route path='/transfer-patient' element={<><Navbar/><TransferPatient/></>}/>
       <Route path='/update-bed-status' element={<><Navbar/><UpdateBedStatus/></>}/>
       <Route path='/update-hospital-profile'element={<><Navbar/><UpdateHospitalProfile/></>}/>
+
+      <Route  path='chat' element={<><Chat></Chat></>} />
     
     </Routes>
     <ToastContainer position="top-right" autoClose={3000} />
