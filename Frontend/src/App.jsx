@@ -4,7 +4,10 @@ import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,S
 import {Navbar} from "./Components/CompIndex"
 import {Routes,Route,BrowserRouter} from "react-router-dom"
 import { ToastContainer } from "react-toastify";
+
+import Footer from './Components/Footer'
 import { Navigate } from "react-router-dom";
+
 
 function App() {
   
@@ -15,10 +18,12 @@ function App() {
     <BrowserRouter>
 
     <Routes>
+
       <Route path='*' element={<Navigate  to="/"/>}/>
       <Route path='/'element ={<><Navbar/><UserHomepage/></>}/>
       <Route path="/hospital-homepage" element ={<><Navbar/><HospitalHome/></>}/>
       <Route path='/signing-as' element={<SigninAs/>}/>
+
       <Route path='/user-signup' element={<UserSignup/>}/>
       <Route path='/user-signin' element={<UserSignin/>}/>
       <Route path='/hospital-signup' element={<HospitalSignup/>}/>
@@ -27,6 +32,9 @@ function App() {
      < Route path='/ambulance-signup'  element={<><AmbulanceHomepage/></>} />
       <Route path='/ambulance-signup' element={<AmbulanceSignup/>}/> 
       <Route path='/ambulance-signin' element={<AmbulanceSignin/>}/>
+
+     
+
       <Route path='/doctor-availability' element={<><Navbar/><DoctorAvailability/></>}/>
       <Route path='/patient-transfer-records' element={<><Navbar/><PatientTransferRecords/></>}/>
       <Route path='/staff-info' element={<><Navbar/><Staffinfo/></>}/>
@@ -35,6 +43,7 @@ function App() {
       <Route path='/update-hospital-profile'element={<><Navbar/><UpdateHospitalProfile/></>}/>
 
       <Route  path='chat' element={<><Chat></Chat></>} />
+
     
     </Routes>
     <ToastContainer position="top-right" autoClose={3000} />

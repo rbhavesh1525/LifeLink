@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { showToast } from "../Components/Toast";
 import useAuthStore from "../Store/authStore";
+import { useNavigate } from "react-router-dom";
 
 function UserSignin() {
   const [message, setMessage] = useState("");
@@ -11,6 +12,7 @@ function UserSignin() {
   });
 
   const { login } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleSignin = async (e) => {
     e.preventDefault();
@@ -24,13 +26,19 @@ function UserSignin() {
 
       console.log("Signin successful:", response.data);
 
-      login(response.data.user, response.data.token); // Use zustand login function
+      // Store user data with role
+      const userData = {
+        ...response.data.user,
+        role: "user" // Add role identifier
+      };
+
+      login(userData, response.data.token); // Use zustand login function
       showToast(" 🎉 Signin Successful!", "success");
       setMessage("Redirecting you to homepage");
 
-      // Redirect after successful login
+      // Use React Router navigation instead of window.location
       setTimeout(() => {
-        window.location.href = "/";
+        navigate("/user-homepage");
       }, 3000);
     } catch (error) {
       console.error("Unable to login:", error);

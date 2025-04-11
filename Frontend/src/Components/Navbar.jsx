@@ -8,6 +8,7 @@ function Navbar() {
   const [dropdown, setDropdown] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+  const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
     checkLoginStatus();
@@ -17,8 +18,10 @@ function Navbar() {
 
   const checkLoginStatus = async () => {
     const token = localStorage.getItem("token");
-    console.log("Token check:", token);
-    setIsLogin(!!token);
+    const userData = localStorage.getItem("user");
+    if (token && userData) {
+      setIsLogin(true);
+    }
   };
 
   const logout = useAuthStore((state) => state.logout);
@@ -41,14 +44,41 @@ function Navbar() {
     }
   };
 
+  // Get the appropriate home page link based on user type
+  const getHomePageLink = () => {
+    if (!user) return "/";
+    
+    // Check user type based on role
+    switch (user.role) {
+      case "hospital":
+        return "/hospital-homepage";
+      case "ambulance":
+        return "/ambulance-homepage";
+      case "user":
+        return "/user-homepage";
+      default:
+        return "/";
+    }
+  };
+
   return (
     <nav className="bg-white border-b border-gray-300 px-6 py-3 flex justify-between items-center shadow-sm">
       {/* Logo Section */}
-      <div className="text-xl font-bold">LifeLink</div>
+      <div 
+        className="text-xl font-bold cursor-pointer" 
+        onClick={() => navigate(getHomePageLink())}
+      >
+        LifeLink
+      </div>
 
       {/* Navigation Links */}
       <ul className="flex space-x-6 text-gray-700">
-        <li className="cursor-pointer hover:text-gray-900">Home</li>
+        <li 
+          className="cursor-pointer hover:text-gray-900"
+          onClick={() => navigate(getHomePageLink())}
+        >
+          Home
+        </li>
         <li className="cursor-pointer hover:text-gray-900">About</li>
         <li className="cursor-pointer hover:text-gray-900">Services</li>
         <li className="cursor-pointer hover:text-gray-900">Contact</li>
@@ -69,7 +99,9 @@ function Navbar() {
             className="flex items-center space-x-2 w-12 h-10 rounded-full bg-gray-200 justify-center cursor-pointer"
             onClick={handleDropDown}
           >
-            <span className="text-gray-600 font-medium">{"U"}</span>
+            <span className="text-gray-600 font-medium">
+              {user?.firstName?.[0] || user?.hospitalName?.[0] || user?.driverName?.[0] || "U"}
+            </span>
             <span className="text-gray-600 text-sm">{dropdown ? "▲" : "▼"}</span>
           </div>
 

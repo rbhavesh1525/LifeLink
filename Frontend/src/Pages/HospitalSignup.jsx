@@ -5,6 +5,7 @@ import axios from "axios"
 import { Building, Phone } from "lucide-react"
 import { showToast } from "../Components/Toast"
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom"
 
 function HospitalSignup() {
   const [message, setMessage] = useState("");
@@ -25,7 +26,7 @@ function HospitalSignup() {
     const { name, value } = e.target
     setHospitalProfileData({ ...hospitalprofiledata, [name]: value })
   }
-
+  const navigate = useNavigate();
   const handleHospitalDataSubmit = async (e) => {
     e.preventDefault()
     setError("")
@@ -33,8 +34,6 @@ function HospitalSignup() {
       const response = await axios.post("http://localhost:5000/api/auth/hospital-signup", hospitalprofiledata)
       console.log(response.data)
       showToast("Hospital Signup Successful!", "success");
-      setMessage("Signup Successful!", "You Can Login Now");
-
       setHospitalProfileData({
         hospitalName: "",
         hospitalType: "",
@@ -46,6 +45,7 @@ function HospitalSignup() {
         hospitalPassword: "",
         hospitalWebsite: "",
       })
+      navigate("/hospital-signin")
     } catch (error) {
       console.error("❌ Error in Hospital Signup:", error)
       // showToast("❌ Error in Hospital Signup:","error")
