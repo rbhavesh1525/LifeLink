@@ -13,10 +13,13 @@
     "@tailwindcss/vite": "^4.0.6",
     "cors": "^2.8.5",
     "lucide-react": "^0.482.0",
+    "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "react-toastify": "^11.0.5",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "tailwindcss": "^4.0.6",
     "zustand": "^5.0.3"
   },

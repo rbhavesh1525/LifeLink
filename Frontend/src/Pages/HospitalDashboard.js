@@ -5,7 +5,7 @@ export const HospitalServices = [
       name: "Update Hospital Profile",
       description: "Update your hospital information here.",
       buttontext: "Update Now",
-      path : "/update-hospital-profile"
+      path : `/update-hospital-profile/:hospitalId`,
     },
     {
       id: 2,

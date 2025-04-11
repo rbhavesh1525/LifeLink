@@ -1,0 +1,32 @@
+
+step1 : go in app.js install socket.io , import server from socket.io 
+crarte connection io.connect and disconnection io.disconnection
+
+
+step2: after doing basic setup build frontend and make connection with socket.io  using io.on for connect and socket.on for disconnect in backend
+* install library which allow frontend to communicate or get connect with backend
+* npm i socket.io-client
+* import in frontend
+
+* then connect with backend url 
+check terminal for connection
+
+
+* then create ui name and room id 
+take 2 states for them two store their values
+
+* create one joinroom function in this function 
+check first username and room should have data 
+then do socket.emit("join-room",data) data means id of room 
+
+on server side 
+handle this event join room and do 
+
+ socket.on("join_room",(data)=>{
+        socket.join(data); 
+        console.log(`user with id: ${socket.id} joined room: ${data}`)
+    });
+
+
+and when you are sending request from frontend to backend no http request getting created this is the beauty of socket.io 
+step3: 

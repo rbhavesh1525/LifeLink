@@ -24,11 +24,11 @@ function AmbulanceSignin() {
 
       console.log("Signin successful:", response.data);
 
-      login(response.data.user, response.data.token); // Use zustand login function
+      login(response.data.user, response.data.token); 
       showToast(" 🎉 Signin Successful!", "success");
       setMessage("Redirecting you to homepage");
 
-      // Redirect after successful login
+     
       setTimeout(() => {
         window.location.href = "/AmbulanceHomepage";
       }, 3000);

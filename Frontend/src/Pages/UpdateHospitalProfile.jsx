@@ -1,49 +1,92 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import axios from "axios"
-import { Building, Phone } from "lucide-react"
+import { useState, useEffect } from "react";
+import axios from "axios";
+import PropTypes from "prop-types";
+import { Building, Phone } from "lucide-react";
+import useAuthStore from "../Store/authStore";
+import { showToast } from "../Components/Toast";
 
 function UpdateHospitalProfile() {
+ 
+  
   const [hospitalprofiledata, setHospitalProfileData] = useState({
     hospitalName: "",
+    // hospitalRegistrationNumber: "",
     hospitalType: "General Hospital",
     hospitalDescription: "",
     hospitalAddress: "",
     hospitalPhone: "",
-    hospitalEmail: "",
+    // hospitalEmail: "",
     hospitalWebsite: "",
-  })
+  });
 
   const handleOnChange = (e) => {
-    const { name, value } = e.target
-    setHospitalProfileData({ ...hospitalprofiledata, [name]: value })
-  }
+    const { name, value } = e.target;
+
+    setHospitalProfileData({ ...hospitalprofiledata, [name]: value });
+  };
+  const hospitalId = useAuthStore((state)=>state.hospitalId);
+  console.log("checking hospitalid for fetching data from authstore", hospitalId);
+
+  useEffect(() => {
+   
+    console.log("check in fetch part ",hospitalId)
+    const fetchHospitalInfo = async () => {
+
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/get-hospital-info/${hospitalId}`
+        );
+        
+        setHospitalProfileData(response.data);
+      } catch (error) {
+        console.error("Error fetching hospital information:", error);
+      }
+    };
+
+    if (hospitalId) fetchHospitalInfo();
+  }, [hospitalId]);
 
   const handleHospitalDataSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const response = await axios.post("YOUR_API_ENDPOINT", hospitalprofiledata)
-      console.log(response.data)
-      setHospitalProfileData({
-        hospitalName: "",
-        hospitalType: "",
-        hospitalDescription: "",
-        hospitalAddress: "",
-        hospitalPhone: "",
-        hospitalEmail: "",
-        hospitalWebsite: "",
-      })
+      const response = await axios.put(
+        `http://localhost:5000/api/update-hospital-profile/${hospitalId}`,
+        hospitalprofiledata
+      );
+      showToast("Profile Updated Successfully")
+      console.log(response.data);
+      // setHospitalProfileData({
+      //   hospitalName: "",
+      //   // hospitalRegistrationNumber: "",
+      //   hospitalType: "",
+      //   hospitalDescription: "",
+      //   hospitalAddress: "",
+      //   hospitalPhone: "",
+      //   // hospitalEmail: "",
+      //   hospitalWebsite: "",
+      // });
     } catch (error) {
-      console.error("Error updating hospital profile:", error)
+      console.error("Error updating hospital profile:", error);
+
+      const errorMessage =
+              error.response?.data?.message || "profile Updation failed";
+      
+            showToast(`❌ ${errorMessage}`, "error");
+      
     }
-  }
+  };
 
   return (
     <div className="container mx-auto max-w-5xl py-8 px-4">
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-purple-800 mb-2">Update Hospital Profile</h1>
-        <p className="text-gray-600">Update your hospital information and services</p>
+        <h1 className="text-4xl font-bold text-purple-800 mb-2">
+          Update Hospital Profile
+        </h1>
+        <p className="text-gray-600">
+          Update your hospital information and services
+        </p>
       </div>
 
       <form onSubmit={handleHospitalDataSubmit}>
@@ -57,7 +100,10 @@ function UpdateHospitalProfile() {
 
             <div className="space-y-6">
               <div>
-                <label htmlFor="hospital_name" className="block text-sm font-medium mb-2">
+                <label
+                  htmlFor="hospital_name"
+                  className="block text-sm font-medium mb-2"
+                >
                   Hospital Name
                 </label>
                 <input
@@ -72,7 +118,29 @@ function UpdateHospitalProfile() {
               </div>
 
               <div>
-                <label htmlFor="hospital_type" className="block text-sm font-medium mb-2">
+                <label
+                  htmlFor="hospital_registration_number"
+                  className="block text-sm font-medium mb-2"
+                >
+                  Hospital Registration Number
+                </label>
+                <input
+                  type="text"
+                  id="hospital_registrations_number"
+                  name="hospitalregistrationnumber"
+                  value={hospitalprofiledata.hospitalRegistrationNumber}
+                  onChange={handleOnChange}
+                 
+                  disabled
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="hospital_type"
+                  className="block text-sm font-medium mb-2"
+                >
                   Hospital Type
                 </label>
                 <select
@@ -83,20 +151,31 @@ function UpdateHospitalProfile() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 appearance-none bg-white"
                 >
                   <option value="General Hospital">General Hospital</option>
-                  <option value="Specialized Hospital">Specialized Hospital</option>
+                  <option value="Specialized Hospital">
+                    Specialized Hospital
+                  </option>
                   <option value="Children Hospital">Children Hospital</option>
-                  <option value="Mental Health Hospital">Mental Health Hospital</option>
-                  <option value="Psychiatric Hospital">Psychiatric Hospital</option>
+                  <option value="Mental Health Hospital">
+                    Mental Health Hospital
+                  </option>
+                  <option value="Psychiatric Hospital">
+                    Psychiatric Hospital
+                  </option>
                   <option value="Emergency Hospital">Emergency Hospital</option>
                   <option value="Nursing Home">Nursing Home</option>
                   <option value="Home Healthcare">Home Healthcare</option>
-                  <option value="Long-term Care Hospital">Long-term Care Hospital</option>
+                  <option value="Long-term Care Hospital">
+                    Long-term Care Hospital
+                  </option>
                   <option value="Other">Other</option>
                 </select>
               </div>
 
               <div>
-                <label htmlFor="hospital_description" className="block text-sm font-medium mb-2">
+                <label
+                  htmlFor="hospital_description"
+                  className="block text-sm font-medium mb-2"
+                >
                   Description
                 </label>
                 <textarea
@@ -121,7 +200,10 @@ function UpdateHospitalProfile() {
 
             <div className="space-y-6">
               <div>
-                <label htmlFor="hospital_address" className="block text-sm font-medium mb-2">
+                <label
+                  htmlFor="hospital_address"
+                  className="block text-sm font-medium mb-2"
+                >
                   Address
                 </label>
                 <input
@@ -136,7 +218,10 @@ function UpdateHospitalProfile() {
               </div>
 
               <div>
-                <label htmlFor="hospital_phone" className="block text-sm font-medium mb-2">
+                <label
+                  htmlFor="hospital_phone"
+                  className="block text-sm font-medium mb-2"
+                >
                   Phone Number
                 </label>
                 <input
@@ -151,7 +236,10 @@ function UpdateHospitalProfile() {
               </div>
 
               <div>
-                <label htmlFor="hospital_email" className="block text-sm font-medium mb-2">
+                <label
+                  htmlFor="hospital_email"
+                  className="block text-sm font-medium mb-2"
+                >
                   Email
                 </label>
                 <input
@@ -160,13 +248,17 @@ function UpdateHospitalProfile() {
                   name="hospitalEmail"
                   value={hospitalprofiledata.hospitalEmail}
                   onChange={handleOnChange}
+                  disabled
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
 
               <div>
-                <label htmlFor="hospital_website" className="block text-sm font-medium mb-2">
+                <label
+                  htmlFor="hospital_website"
+                  className="block text-sm font-medium mb-2"
+                >
                   Website
                 </label>
                 <input
@@ -182,7 +274,7 @@ function UpdateHospitalProfile() {
               <div className="pt-4">
                 <button
                   type="submit"
-                  className="w-full bg-purple-800 text-white py-2 px-4 rounded-md hover:bg-purple-900 transition-colors"
+                  className="w-full bg-purple-800 text-white py-2 px-4 rounded-md hover:bg-purple-900 transition-colors cursor-pointer"
                 >
                   Update Profile
                 </button>
@@ -192,8 +284,10 @@ function UpdateHospitalProfile() {
         </div>
       </form>
     </div>
-  )
+  );
 }
 
-export default UpdateHospitalProfile
-
+UpdateHospitalProfile.propTypes = {
+  hospitalId: PropTypes.string.isRequired,
+};
+export default UpdateHospitalProfile;

@@ -1,25 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from 'axios';
+
 import { FaUserMd, FaTimesCircle, FaPlus } from "react-icons/fa";
 
-const DoctorAvailability = () => {
-  const [doctors, setDoctors] = useState([
-    { id: 1, name: "Dr. Sarah Johnson", specialization: "Cardiologist", status: "AVAILABLE", note: "-" },
-    { id: 2, name: "Dr. Michael Chen", specialization: "Neurologist", status: "UNAVAILABLE", note: "Out of town until next week" },
-    { id: 3, name: "Dr. Emily Brown", specialization: "Pediatrician", status: "EMERGENCY", note: "At City General Hospital for emergency surgery" },
-  ]);
 
+const DoctorAvailability = () => {
+  const [doctors, setDoctors] = useState([]);
   const [newDoctor, setNewDoctor] = useState({ name: "", specialization: "" });
   const [noteInput, setNoteInput] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const handleStatusChange = (id, newStatus) => {
-    setDoctors((prevDoctors) =>
-      prevDoctors.map((doctor) =>
-        doctor.id === id ? { ...doctor, status: newStatus } : doctor
-      )
-    );
-  };
 
   const handleOpenNotePopup = (doctor) => {
     setSelectedDoctor(doctor);
@@ -27,21 +18,65 @@ const DoctorAvailability = () => {
     setIsPopupOpen(true);
   };
 
-  const handleSaveNote = () => {
-    setDoctors((prevDoctors) =>
-      prevDoctors.map((doctor) =>
-        doctor.id === selectedDoctor.id ? { ...doctor, note: noteInput } : doctor
-      )
-    );
-    setIsPopupOpen(false);
-  };
+useEffect(()=>{
+  axios.get('http://localhost:5000/api/fetch-doctors')
+  .then(response=>setDoctors(response.data))
+  .catch(error=>console.error("Error fetching doctors",error));
+ 
+})
 
-  const handleAddDoctor = () => {
+ 
+
+  const handleAddDoctor = async () => {
     if (newDoctor.name && newDoctor.specialization) {
-      setDoctors([...doctors, { id: doctors.length + 1, ...newDoctor, status: "AVAILABLE", note: "-" }]);
-      setNewDoctor({ name: "", specialization: "" });
+      try {
+        const response = await axios.post('http://localhost:5000/api/add-doctor', {
+          ...newDoctor, 
+          status: "AVAILABLE", 
+          note: "-"
+        });
+  
+        setDoctors((prevDoctors) => [...prevDoctors, response.data]);
+  
+        setNewDoctor((prev) => ({ ...prev, name: "", specialization: "" }));
+      } catch (error) {
+        console.error("Error adding doctor:", error);
+      }
     }
   };
+  
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      await axios.put(`http://localhost:5000/api/update-doctor-status/${id}/status`, { status: newStatus });
+  
+      setDoctors((prevDoctors) =>
+        prevDoctors.map((doctor) =>
+          doctor._id === id ? { ...doctor, status: newStatus } : doctor
+        )
+      );
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+  
+  const handleSaveNote = async () => {
+    if (!selectedDoctor) return;
+  
+    try {
+      await axios.put(`http://localhost:5000/api/update-doctor-note/${selectedDoctor._id}/note`, { note: noteInput });
+  
+      setDoctors((prevDoctors) =>
+        prevDoctors.map((doctor) =>
+          doctor._id === selectedDoctor._id ? { ...doctor, note: noteInput } : doctor
+        )
+      );
+  
+      setIsPopupOpen(false);
+    } catch (error) {
+      console.error("Error updating note:", error);
+    }
+  };
+
 
   return (
     <div className="p-6 max-w-7xl mx-auto  bg-white shadow-md rounded-lg border border-gray-300 mt-10 ">
@@ -82,7 +117,7 @@ const DoctorAvailability = () => {
           </thead>
           <tbody>
             {doctors.map((doctor) => (
-              <tr key={doctor.id} className="border-b hover:bg-gray-50">
+              <tr key={doctor._id} className="border-b hover:bg-gray-50">
                 <td className="p-4">{doctor.name}</td>
                 <td className="p-4">{doctor.specialization}</td>
                 <td className="p-4">
@@ -99,14 +134,14 @@ const DoctorAvailability = () => {
                 <td className="p-4">{doctor.note}</td>
                 <td className="p-4 flex gap-2">
                   <button
-                    onClick={() => handleStatusChange(doctor.id, "AVAILABLE")}
+                    onClick={() => handleStatusChange(doctor._id, "AVAILABLE")}
                     className="p-2 bg-green-100 text-green-600 rounded-md hover:bg-green-200 transition cursor-pointer"
                     title="Mark Available"
                   >
                     <FaUserMd />
                   </button>
                   <button
-                    onClick={() => handleStatusChange(doctor.id, "UNAVAILABLE")}
+                    onClick={() => handleStatusChange(doctor._id, "UNAVAILABLE")}
                     className="p-2 bg-red-100 text-red-600 rounded-md hover:bg-red-200 transition cursor-pointer"
                     title="Mark Unavailable"
                   >

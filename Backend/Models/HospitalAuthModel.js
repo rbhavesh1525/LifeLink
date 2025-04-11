@@ -9,6 +9,9 @@ const HospitalSchema = new mongoose.Schema({
     hospitalRegistrationNumber: { type: String, required: true, unique: true },
     hospitalDescription: { type: String, required: true },
     hospitalAddress: { type: String, required: true },
+    latitude: { type: Number },
+    longitude: { type: Number },
+    
     hospitalPhone: { type: String, required: true },
     hospitalEmail: { type: String, required: true, unique: true },
     hospitalWebsite: { type: String },

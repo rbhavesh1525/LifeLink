@@ -5,6 +5,8 @@ const Hospital = require('../Models/HospitalAuthModel');
 const Ambulance = require('../Models/AmbulanceAuthModel');
 const upload = require('../Middleware/upload');
 const jwt = require('jsonwebtoken');
+const axios = require('axios')
+
 
 require('dotenv').config();
 
@@ -107,6 +109,34 @@ const registerHospital = async (req, res) => {
         // Hash password
         const hashedPassword = await bcrypt.hash(hospitalPassword, 10);
 
+        let latitude ="";
+        let longitude="";
+        try{
+            const geoRes = await axios.get("https://nominatim.openstreetmap.org/search", {
+                params:{
+                    q:hospitalAddress,
+                    format:"json",
+                    limit:1             
+                },
+                headers:{
+                    'User-Agent' : 'LifeLink/1.0  (rathodbhaveshpdp@gmail.com)'
+                }
+
+           
+
+            });
+            console.log("Geocode API Response:", geoRes.data);
+            if (geoRes.data && geoRes.data.length > 0) {
+                latitude = parseFloat(geoRes.data[0].lat);
+                longitude = parseFloat(geoRes.data[0].lon);
+            }
+            
+            
+        }
+        catch(geoError){
+            console.error("geocoding failed : ",geoError.message);
+        }
+
         // Create new hospital
        const newhospital = new Hospital({
             hospitalName,
@@ -114,6 +144,8 @@ const registerHospital = async (req, res) => {
             hospitalRegistrationNumber,
             hospitalDescription,
             hospitalAddress,
+            latitude,
+            longitude,
             hospitalPhone,
             hospitalEmail,
             hospitalWebsite,
