@@ -24,7 +24,7 @@ function SigninAs () {
           </Link>
 
           <Link
-            to="/signin"
+            to="/ambulance-signin"
             className="flex items-center justify-center gap-3 w-full p-3 border rounded-lg shadow-sm hover:bg-gray-100 transition"
           >
             <FaAmbulance className="text-gray-600" />

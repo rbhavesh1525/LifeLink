@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const NearbyHospitals = () => {
@@ -7,6 +7,8 @@ const NearbyHospitals = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
   const [search, setSearch] = useState("");
+  const [hospitals, setHospitals] = useState([]);
+  const [loadingHospitals, setLoadingHospitals] = useState(false);
 
   const updateLocation = async () => {
     setLoading(true);
@@ -22,13 +24,11 @@ const NearbyHospitals = () => {
           const userData = JSON.parse(localStorage.getItem("user"));
           const userid = userData?.id;
 
-          console.log("Sending to API:", { userid, latitude, longitude });
           try {
             const response = await axios.post(
               "http://localhost:5000/api/save-location",
               { latitude, longitude, userid }
             );
-            
 
             setMessage("Location updated successfully!");
             console.log("Location saved to backend:", response.data);
@@ -50,9 +50,39 @@ const NearbyHospitals = () => {
     }
   };
 
+  // Fetch nearby hospitals after location is available
+  useEffect(() => {
+    const fetchNearbyHospitals = async () => {
+      try {
+        const userData = JSON.parse(localStorage.getItem("user"));
+        const userid = userData?.id;
+        if (!userid) return;
 
+        console.log(userid)
 
-  //nearby hospital useeffect
+        setLoadingHospitals(true);
+        const res = await axios.get(
+          `http://localhost:5000/api/get-nearby-hospital/${userid}`
+        );
+
+        setHospitals(res.data);
+        setLoadingHospitals(false);
+      } catch (err) {
+        console.error("Failed to fetch nearby hospitals:", err);
+        setError("Error fetching nearby hospitals");
+        setLoadingHospitals(false);
+      }
+    };
+
+    if (location) {
+      fetchNearbyHospitals();
+    }
+  }, [location]);
+
+  // Filter hospitals based on search input
+  const filteredHospitals = hospitals.filter(({ hospital }) =>
+    hospital.hospitalName.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-white p-4">
@@ -83,11 +113,35 @@ const NearbyHospitals = () => {
         </p>
       )}
 
-      {/* Placeholder for Hospital List */}
+      {/* Hospital List */}
       <div className="mt-4">
-        <h2 className="text-xl font-semibold mb-2">Nearby Hospitals</h2>
-        {/* You can map hospital list here */}
-        <p className="text-gray-500">Hospital list will appear here...</p>
+        <h2 className="text-xl font-semibold mb-2">
+          Nearby Hospitals with Available Doctors
+        </h2>
+
+        {loadingHospitals ? (
+          <p className="text-gray-500">Loading nearby hospitals...</p>
+        ) : filteredHospitals.length === 0 ? (
+          <p className="text-gray-500">No hospitals found.</p>
+        ) : (
+          <ul className="space-y-4">
+            {filteredHospitals.map(({ hospital, distance }, idx) => (
+              <li
+                key={idx}
+                className="border border-gray-300 p-4 rounded-md shadow-sm"
+              >
+                <h3 className="text-lg font-semibold">
+                  🏥 {hospital.hospitalName}
+                </h3>
+                <p>📍 {hospital.hospitalAddress}</p>
+                <p>📞 {hospital.hospitalPhone}</p>
+                <p>📧 {hospital.hospitalEmail}</p>
+                <p>🌐 {hospital.hospitalWebsite}</p>
+                <p>📏 Distance: {distance} km</p>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

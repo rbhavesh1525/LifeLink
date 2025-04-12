@@ -31,7 +31,7 @@ function AmbulanceSignin() {
 
      
       setTimeout(() => {
-        window.location.href = "/AmbulanceHomepage";
+        window.location.href = "/ambulance-homepage";
       }, 3000);
     } catch (error) {
       console.error("Unable to login:", error);
