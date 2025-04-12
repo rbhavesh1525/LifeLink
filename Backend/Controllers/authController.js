@@ -63,9 +63,12 @@ const UserSignin = async (req, res) => {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
-        const token = jwt.sign({ id: user._id }, JWT_SECRET_KEY, { expiresIn: "7day" })
+        const token = jwt.sign({ id: user._id,  role: 'user'  }, JWT_SECRET_KEY, { expiresIn: "7day" })
 
-        res.status(200).json({ message: "Signin Successfull", token, user })
+        res.status(200).json({ message: "Signin Successfull", token, user :{
+            id:user._id,
+            role : "user"
+        } })
 
     } catch (error) {
 
@@ -194,6 +197,7 @@ const loginHospital = async (req, res) => {
             token,
             user: {
                 id: hospital._id,
+                role:"hospital",
                 hospitalName: hospital.hospitalName,
                 hospitalEmail: hospital.hospitalEmail,
                 hospitalType: hospital.hospitalType,
@@ -261,9 +265,13 @@ const registerAmbulance = async (req, res) => {
       }
   
       // Generate JWT token
-      const token = jwt.sign({ id: ambulance._id, driverEmail: ambulance.driverEmail }, AMBULANCE_SECRET_KEY, { expiresIn: "1h" });
+      const token = jwt.sign({ id: ambulance._id,role: "ambulance", driverEmail: ambulance.driverEmail }, AMBULANCE_SECRET_KEY, { expiresIn: "1h" });
   
-      res.status(200).json({ message: "Login successful", token });
+      res.status(200).json({ message: "Login successful", token , user:{
+        id: ambulance._id,
+        role: "ambulance",
+        driverEmail : driverEmail,
+      } });
     } catch (error) {
         console.error("Login error:", error);
         res.status(500).json({ message: "Error in login", error: error.message });

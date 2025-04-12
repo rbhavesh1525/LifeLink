@@ -17,37 +17,30 @@ function UserSignin() {
   const handleSignin = async (e) => {
     e.preventDefault();
     setMessage("");
-
+  
     try {
       const response = await axios.post(
         "http://localhost:5000/api/auth/user-signin",
         signinData
       );
-
-      console.log("Signin successful:", response.data);
-
-      // Store user data with role
-      const userData = {
-        ...response.data.user,
-        role: "user" // Add role identifier
-      };
-
-      login(userData, response.data.token); // Use zustand login function
-      showToast(" 🎉 Signin Successful!", "success");
-      setMessage("Redirecting you to homepage");
-
-      // Use React Router navigation instead of window.location
+  
+      const userData = response.data.user; // role: "user"
+  
+      login(userData, response.data.token); 
+      showToast("🎉 User login successful!", "success");
+      setMessage("Redirecting...");
+  
       setTimeout(() => {
         navigate("/user-homepage");
-      }, 3000);
+      }, 2000);
     } catch (error) {
-      console.error("Unable to login:", error);
-
       const errorMessage = error.response?.data?.message || "Signin failed";
-
-      showToast(`❌ ${errorMessage}`, "error");
+      showToast(`❌ User login failed", ${errorMessage} `);
     }
   };
+  
+
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;

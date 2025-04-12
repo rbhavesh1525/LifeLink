@@ -16,9 +16,11 @@ import HospitalHome from "./HospitalHome";
 import UserHomepage from "./UserHomePage";
 import AmbulanceHomepage from "./AmbulanceHomepage";
 
+import NearbyHospitals from "./NearbyHospitals";
+
 import HospitalChat from "./HospitalChat"
 import Chat from "./Chat";
 
 
 
-export {HospitalHome,UserHomepage, UserSignin, UserSignup, PatientTransferRecords, TransferPatient, Staffinfo, UpdateBedStatus, UpdateHospitalProfile, DoctorAvailability, SigninAs, AmbulanceHomepage, AmbulanceSignin, AmbulanceSignup, HospitalSignin, HospitalSignup , HospitalChat ,Chat }
+export {HospitalHome,UserHomepage, UserSignin, UserSignup, PatientTransferRecords, TransferPatient, Staffinfo, UpdateBedStatus, UpdateHospitalProfile, DoctorAvailability, SigninAs, AmbulanceHomepage, AmbulanceSignin, AmbulanceSignup, HospitalSignin, HospitalSignup , HospitalChat ,Chat , NearbyHospitals }

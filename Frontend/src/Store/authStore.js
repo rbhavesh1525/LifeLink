@@ -3,33 +3,28 @@ import { create } from "zustand";
 const useAuthStore = create((set) => ({
   user: JSON.parse(localStorage.getItem("user")) || null,
   token: localStorage.getItem("token") || null,
-  hospitalId: localStorage.getItem("hospitalId") || null,  // 🔹 Persist hospitalId
+  role: localStorage.getItem("role") || null,
   isAuthenticated: !!localStorage.getItem("token"),
 
-  // Login function
   login: (userData, token) => {
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("hospitalId", userData.id);  // 🔹 Store hospitalId in localStorage
+    localStorage.setItem("role", userData.role);  // <-- store role
 
     set({
       user: userData,
       token,
-      hospitalId: userData.id, // 🔹 Persist ID
+      role: userData.role,
       isAuthenticated: true,
     });
 
-    console.log("Login Successful:", token);
+    console.log("✅ Login Successful:", userData.role);
   },
 
-  // Logout function
   logout: () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("hospitalId"); // 🔹 Clear hospitalId on logout
-
-    set({ user: null, token: null, hospitalId: null, isAuthenticated: false });
-    console.log("Logout Successful");
+    localStorage.clear();
+    set({ user: null, token: null, role: null, isAuthenticated: false });
+    console.log("👋 Logout Successful");
   },
 }));
 

@@ -1,6 +1,6 @@
 
 import './App.css'
-import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,Staffinfo,TransferPatient,UpdateBedStatus,UpdateHospitalProfile,DoctorAvailability,SigninAs,HospitalSignin,HospitalSignup,AmbulanceSignin,AmbulanceSignup,AmbulanceHomepage, HospitalChat, Chat} from "./Pages/PageIndex"
+import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,Staffinfo,TransferPatient,UpdateBedStatus,UpdateHospitalProfile,DoctorAvailability,SigninAs,HospitalSignin,HospitalSignup,AmbulanceSignin,AmbulanceSignup,AmbulanceHomepage, HospitalChat, Chat, NearbyHospitals} from "./Pages/PageIndex"
 import {Navbar} from "./Components/CompIndex"
 import {Routes,Route,BrowserRouter} from "react-router-dom"
 import { ToastContainer } from "react-toastify";
@@ -11,8 +11,6 @@ import { Navigate } from "react-router-dom";
 
 function App() {
   
-  
-
   return (
     <>
     <BrowserRouter>
@@ -20,8 +18,8 @@ function App() {
     <Routes>
 
       <Route path='*' element={<Navigate  to="/"/>}/>
-      <Route path='/'element ={<><Navbar/><UserHomepage/></>}/>
-      <Route path="/hospital-homepage" element ={<><Navbar/><HospitalHome/></>}/>
+      <Route path='/'element ={<><Navbar/><UserHomepage/><Footer/></>}/>
+      <Route path="/hospital-homepage" element ={<><Navbar/><HospitalHome/><Footer/></>}/>
       <Route path='/signing-as' element={<SigninAs/>}/>
 
       <Route path='/user-signup' element={<UserSignup/>}/>
@@ -33,8 +31,6 @@ function App() {
       <Route path='/ambulance-signup' element={<AmbulanceSignup/>}/> 
       <Route path='/ambulance-signin' element={<AmbulanceSignin/>}/>
 
-     
-
       <Route path='/doctor-availability' element={<><Navbar/><DoctorAvailability/></>}/>
       <Route path='/patient-transfer-records' element={<><Navbar/><PatientTransferRecords/></>}/>
       <Route path='/staff-info' element={<><Navbar/><Staffinfo/></>}/>
@@ -42,13 +38,17 @@ function App() {
       <Route path='/update-bed-status' element={<><Navbar/><UpdateBedStatus/></>}/>
       <Route path='/update-hospital-profile'element={<><Navbar/><UpdateHospitalProfile/></>}/>
 
+      <Route  path='/nearby-hospitals' element={<> <Navbar/> <NearbyHospitals/> <Footer/>    </>} />
+
       <Route  path='chat' element={<><Chat></Chat></>} />
 
-    
     </Routes>
     <ToastContainer position="top-right" autoClose={3000} />
     </BrowserRouter>
+     
       
+
+
     </>
   )
 }

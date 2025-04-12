@@ -25,8 +25,9 @@ function HospitalSignin() {
       );
 
       console.log("Signin successful:", response.data);
+      const userData = response.data.user;
 
-      login(response.data.user, response.data.token,response.data.user.id); 
+      login(response.data.user, response.data.token,response.data.user.id, userData); 
      
       showToast(" 🎉 Signin Successful!", "success");
       setMessage("Redirecting you to homepage");

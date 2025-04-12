@@ -23,8 +23,9 @@ function AmbulanceSignin() {
       );
 
       console.log("Signin successful:", response.data);
+      const userData = response.data.user;
 
-      login(response.data.user, response.data.token); 
+      login(response.data.user, response.data.token,userData); 
       showToast(" 🎉 Signin Successful!", "success");
       setMessage("Redirecting you to homepage");
 

@@ -10,35 +10,33 @@ function UserHomepage() {
     {
       id: 1,
       icon: <FaHospital className="text-4xl text-blue-500" />,
-      title: "Find Hospitals",
+      title: "Nearby Hospitals",
       description: "Search for hospitals based on location and specialties",
-      path: "/find-hospitals",
+      path: "/nearby-hospitals",
+      btntext: "Nearby Hospitals ",
       color: "bg-blue-50"
     },
+    
     {
       id: 2,
       icon: <FaAmbulance className="text-4xl text-red-500" />,
       title: "Request Ambulance",
       description: "Quick access to emergency ambulance services",
       path: "/request-ambulance",
+      btntext : "Book Ambulance",
       color: "bg-red-50"
     },
+    
     {
       id: 3,
-      icon: <FaUserMd className="text-4xl text-green-500" />,
-      title: "Book Appointment",
-      description: "Schedule appointments with doctors",
-      path: "/book-appointment",
-      color: "bg-green-50"
-    },
-    {
-      id: 4,
       icon: <FaSearch className="text-4xl text-purple-500" />,
       title: "Search Doctors",
       description: "Find doctors by specialty and location",
       path: "/search-doctors",
+      btntext:"Search-doctors",
       color: "bg-purple-50"
     }
+
   ];
 
   return (
@@ -66,6 +64,7 @@ function UserHomepage() {
                 {service.icon}
                 <h3 className="text-lg font-semibold mt-4">{service.title}</h3>
                 <p className="text-gray-600 mt-2">{service.description}</p>
+                <button className="border-2 cursor-pointer p-2 ">{service.btntext}</button>
               </div>
             </Link>
           ))}
