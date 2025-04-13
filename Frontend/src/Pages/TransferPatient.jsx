@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import axios from '../utils/api';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../store/authStore';
-import socket, { connectSocket } from '../utils/socket';
+import useAuthStore from '../Store/authStore';
+import { useSocket } from '../context/SocketContext';
 
 function TransferPatient() {
     const [transferData, setTransferData] = useState({
@@ -22,39 +22,50 @@ function TransferPatient() {
     const messagesEndRef = useRef(null);
     const navigate = useNavigate();
     const user = useAuthStore((state) => state.user);
+    const { socket, sendMessage: socketSendMessage } = useSocket();
 
-    // Connect to socket when component mounts
+    // Listen for new messages from socket
     useEffect(() => {
-        // Connect to socket with authentication
-        const socketInstance = connectSocket();
-        
-        // Set up event listeners
-        socketInstance.on('connect', () => {
-            console.log('Socket connected:', socketInstance.id);
-        });
+        if (!socket) return;
 
-        socketInstance.on('connect_error', (err) => {
-            console.error('Socket connection error:', err.message);
-        });
-
-        socketInstance.on('newMessage', (message) => {
-            console.log('New message received:', message);
-            setMessages(prev => [...prev, message]);
-        });
-
-        // Clean up on unmount
-        return () => {
-            socketInstance.off('connect');
-            socketInstance.off('connect_error');
-            socketInstance.off('newMessage');
+        const messageHandler = (message) => {
+            console.log('New message received via socket:', message);
+            
+            // Only add message if it's relevant to the active chat
+            if (selectedHospital && 
+                (message.senderId === selectedHospital || 
+                 message.receiverId === selectedHospital)) {
+                
+                setMessages((prev) => {
+                    // Check if we've already received this message
+                    const messageExists = prev.some(
+                        (m) => m._id === message._id || 
+                        (m.text === message.text && 
+                         m.senderId === message.senderId && 
+                         m.receiverId === message.receiverId &&
+                         m.createdAt === message.createdAt)
+                    );
+                    
+                    if (messageExists) return prev;
+                    return [...prev, message];
+                });
+            }
         };
-    }, []);
+
+        // Add event listener
+        socket.on("newMessage", messageHandler);
+
+        // Cleanup event listener on unmount
+        return () => {
+            socket.off("newMessage", messageHandler);
+        };
+    }, [socket, selectedHospital]);
 
     // Fetch available hospitals
     useEffect(() => {
         const fetchHospitals = async () => {
             try {
-                const response = await axios.get('/api/auth/hospitals');
+                const response = await axios.get('/api/public-hospitals');
                 setHospitals(response.data.filter(hospital => hospital._id !== user?.id));
             } catch (error) {
                 console.error('Error fetching hospitals:', error);
@@ -103,10 +114,20 @@ function TransferPatient() {
         if (!newMessage.trim() || !selectedHospital) return;
 
         try {
+            // First send to backend to get an ID
             const response = await axios.post(`/api/messages/${selectedHospital}`, {
                 text: newMessage
             });
-            setMessages(prev => [...prev, response.data]);
+            
+            // Get the saved message with ID from response
+            const savedMessage = response.data;
+            
+            // Send through socket with the ID from backend
+            socketSendMessage(savedMessage);
+            
+            // Add to local state with the server-generated ID
+            setMessages(prev => [...prev, savedMessage]);
+            
             setNewMessage('');
         } catch (error) {
             console.error('Error sending message:', error);
@@ -122,23 +143,28 @@ function TransferPatient() {
         }
 
         try {
-            const response = await axios.post(`/api/transfer/start/${selectedHospital}`, transferData);
+            const response = await axios.post(`/api/transfers/start/${selectedHospital}`, transferData);
             setTransferInitiated(true);
             toast.success('Transfer request initiated successfully');
             
             // Send automatic message about transfer initiation
             const transferMessage = `Transfer request initiated for patient ${transferData.name}. Please review the details and respond.`;
-            await axios.post(`/api/messages/${selectedHospital}`, {
+            const msgResponse = await axios.post(`/api/messages/${selectedHospital}`, {
                 text: transferMessage
             });
             
+            // Add message to local state
+            setMessages(prev => [...prev, msgResponse.data]);
+            
             // Emit socket event for real-time notification
-            socket.emit('transferInitiated', {
-                destinationHospital: selectedHospital,
-                patientName: transferData.name,
-                sourceHospital: user?.id,
-                transferData: response.data.transfer
-            });
+            if (socket) {
+                socket.emit('transferInitiated', {
+                    destinationHospital: selectedHospital,
+                    patientName: transferData.name,
+                    sourceHospital: user?.id,
+                    transferData: response.data.transfer
+                });
+            }
         } catch (error) {
             console.error('Error initiating transfer:', error);
             toast.error('Failed to initiate transfer');

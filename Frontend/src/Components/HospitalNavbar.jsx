@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { showToast } from "./Toast";
 import useAuthStore from "../Store/authStore";
 
@@ -27,10 +27,14 @@ function HospitalNavbar() {
 
       {/* Navigation Links */}
       <ul className="flex space-x-6 text-gray-700">
-        <li className="cursor-pointer hover:text-gray-900">Home</li>
+        <li className="cursor-pointer hover:text-gray-900">
+          <Link to="/hospital-homepage">Home</Link>
+        </li>
         <li className="cursor-pointer hover:text-gray-900">About us</li>
         <li className="cursor-pointer hover:text-gray-900">Services</li>
-        <li className="cursor-pointer hover:text-gray-900">Transfer data</li>
+        <li className="cursor-pointer hover:text-gray-900">
+          <Link to="/hospital-chat">Chat</Link>
+        </li>
       </ul>
 
       {!isLogin ? (

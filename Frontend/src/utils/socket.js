@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
-import useAuthStore from '../store/authStore';
+import useAuthStore from '../Store/authStore';
 
 // Create a socket instance that connects to the backend
 const socket = io('http://localhost:5000', {

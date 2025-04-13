@@ -1,20 +1,23 @@
-
 import './App.css'
 import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,Staffinfo,TransferPatient,UpdateBedStatus,UpdateHospitalProfile,DoctorAvailability,SigninAs,HospitalSignin,HospitalSignup,AmbulanceSignin,AmbulanceSignup,AmbulanceHomepage, HospitalChat, Chat, NearbyHospitals,NearbyAmbulances} from "./Pages/PageIndex"
 import {Navbar,AmbulanceNavbar,HospitalNavbar} from "./Components/CompIndex"
 import {Routes,Route,BrowserRouter} from "react-router-dom"
 import { ToastContainer } from "react-toastify";
+import { SocketProvider } from "./context/SocketContext"
+import { MessageProvider } from "./context/MessageContext"
 
 import Footer from './Components/Footer'
 import { Navigate } from "react-router-dom";
-
+import HospitalTransferRequest from './Pages/HospitalTransferRequest'
+import HospitalTransferChat from './Pages/HospitalTransferChat'
 
 function App() {
   
   return (
     <>
     <BrowserRouter>
-
+    <SocketProvider>
+    <MessageProvider>
     <Routes>
 
       <Route path='*' element={<Navigate  to="/"/>}/>
@@ -40,10 +43,14 @@ function App() {
 
       <Route  path='/nearby-hospitals' element={<> <Navbar/> <NearbyHospitals/> <Footer/>    </>} />
       <Route  path ='/nearby-ambulance' element={<><AmbulanceNavbar/><NearbyAmbulances/></>}   />
+      <Route path='/hospital-transfer-request' element={<><HospitalNavbar/><HospitalTransferRequest/><Footer/></>}/>
+      <Route path='/hospital-transfer/:hospitalId' element={<><HospitalNavbar/><HospitalTransferChat/><Footer/></>}/>
 
       <Route  path='chat' element={<><Chat></Chat></>} />
 
     </Routes>
+    </MessageProvider>
+    </SocketProvider>
     <ToastContainer position="top-right" autoClose={3000} />
     </BrowserRouter>
      

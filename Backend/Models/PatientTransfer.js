@@ -29,6 +29,11 @@ const PatientTransferSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Hospital',
         required: true
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'accepted', 'rejected', 'completed'],
+        default: 'pending'
     }
 }, {
     timestamps: true

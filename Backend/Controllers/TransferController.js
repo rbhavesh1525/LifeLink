@@ -85,6 +85,68 @@ const getOutgoingTransfers = async (req, res) => {
     }
 }
 
-module.exports = {startTransfer, getPendingTransfers, getOutgoingTransfers}
+// Update transfer status
+const updateTransferStatus = async (req, res) => {
+    try {
+        const { transferId } = req.params;
+        const { status } = req.body;
+        
+        console.log(`Updating transfer ${transferId} to status: ${status}`);
+        
+        // Validate status
+        if (!['accepted', 'rejected', 'completed'].includes(status)) {
+            return res.status(400).json({ message: "Invalid status. Must be 'accepted', 'rejected', or 'completed'" });
+        }
+        
+        // First check if the transfer exists
+        const existingTransfer = await PatientTransfer.findById(transferId);
+        if (!existingTransfer) {
+            console.log(`Transfer with ID ${transferId} not found`);
+            return res.status(404).json({ message: "Transfer not found" });
+        }
+        
+        console.log("Found existing transfer:", existingTransfer);
+        
+        // Update the transfer
+        const transfer = await PatientTransfer.findByIdAndUpdate(
+            transferId,
+            { status },
+            { new: true }
+        ).populate('sourceHospital destinationHospital', 'hospitalName email');
+        
+        console.log("Updated transfer:", transfer);
+        
+        if (!transfer) {
+            return res.status(404).json({ message: "Transfer not found" });
+        }
+        
+        // Send notification to the other hospital
+        const notifyHospitalId = req.user.id === transfer.sourceHospital._id.toString() 
+            ? transfer.destinationHospital._id 
+            : transfer.sourceHospital._id;
+            
+        const receiverSocketId = getReceiverSocketId(notifyHospitalId);
+        console.log(`Notifying hospital ${notifyHospitalId}, socket ID: ${receiverSocketId}`);
+        
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("transferStatusUpdated", {
+                transferId,
+                status,
+                updatedBy: req.user.id,
+                hospitalName: req.user.hospitalName
+            });
+        }
+        
+        res.status(200).json({ 
+            message: `Transfer status updated to ${status}`,
+            transfer 
+        });
+    } catch (error) {
+        console.error('Error updating transfer status:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+}
+
+module.exports = {startTransfer, getPendingTransfers, getOutgoingTransfers, updateTransferStatus}
 
 

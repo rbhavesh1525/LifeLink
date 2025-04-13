@@ -19,9 +19,32 @@ import AmbulanceHomepage from "./AmbulanceHomepage";
 import NearbyHospitals from "./NearbyHospitals";
 import NearbyAmbulances from "./NearbyAmbulances";
 
-import HospitalChat from "./HospitalChat"
+import HospitalChat from "./HospitalChat";
 import Chat from "./Chat";
+import HospitalTransferRequest from "./HospitalTransferRequest";
+import HospitalTransferChat from "./HospitalTransferChat";
 
-
-
-export {HospitalHome,UserHomepage, UserSignin, UserSignup, PatientTransferRecords, TransferPatient, Staffinfo, UpdateBedStatus, UpdateHospitalProfile, DoctorAvailability, SigninAs, AmbulanceHomepage, AmbulanceSignin, AmbulanceSignup, HospitalSignin, HospitalSignup , HospitalChat ,Chat , NearbyHospitals , NearbyAmbulances }
+export {
+  HospitalHome,
+  UserHomepage, 
+  UserSignin, 
+  UserSignup, 
+  PatientTransferRecords, 
+  TransferPatient, 
+  Staffinfo, 
+  UpdateBedStatus, 
+  UpdateHospitalProfile, 
+  DoctorAvailability, 
+  SigninAs, 
+  AmbulanceHomepage, 
+  AmbulanceSignin, 
+  AmbulanceSignup, 
+  HospitalSignin, 
+  HospitalSignup, 
+  HospitalChat,
+  Chat, 
+  NearbyHospitals, 
+  NearbyAmbulances,
+  HospitalTransferRequest,
+  HospitalTransferChat
+}
