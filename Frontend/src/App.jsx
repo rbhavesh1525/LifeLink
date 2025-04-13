@@ -1,7 +1,7 @@
 
 import './App.css'
-import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,Staffinfo,TransferPatient,UpdateBedStatus,UpdateHospitalProfile,DoctorAvailability,SigninAs,HospitalSignin,HospitalSignup,AmbulanceSignin,AmbulanceSignup,AmbulanceHomepage, HospitalChat, Chat, NearbyHospitals} from "./Pages/PageIndex"
-import {Navbar} from "./Components/CompIndex"
+import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,Staffinfo,TransferPatient,UpdateBedStatus,UpdateHospitalProfile,DoctorAvailability,SigninAs,HospitalSignin,HospitalSignup,AmbulanceSignin,AmbulanceSignup,AmbulanceHomepage, HospitalChat, Chat, NearbyHospitals,NearbyAmbulances} from "./Pages/PageIndex"
+import {Navbar,AmbulanceNavbar,HospitalNavbar} from "./Components/CompIndex"
 import {Routes,Route,BrowserRouter} from "react-router-dom"
 import { ToastContainer } from "react-toastify";
 
@@ -19,7 +19,7 @@ function App() {
 
       <Route path='*' element={<Navigate  to="/"/>}/>
       <Route path='/'element ={<><Navbar/><UserHomepage/><Footer/></>}/>
-      <Route path="/hospital-homepage" element ={<><Navbar/><HospitalHome/><Footer/></>}/>
+      <Route path="/hospital-homepage" element ={<><HospitalNavbar/><HospitalHome/><Footer/></>}/>
       <Route path='/signing-as' element={<SigninAs/>}/>
 
       <Route path='/user-signup' element={<UserSignup/>}/>
@@ -27,7 +27,7 @@ function App() {
       <Route path='/hospital-signup' element={<HospitalSignup/>}/>
       <Route path='/hospital-signin' element={<HospitalSignin/>}/>
       <Route path='/hospital-chat' element={<><HospitalChat/></>}/>
-     < Route path='/ambulance-homepage'  element={<><AmbulanceHomepage/></>} />
+     < Route path='/ambulance-homepage'  element={<><AmbulanceNavbar/><AmbulanceHomepage/></>} />
       <Route path='/ambulance-signup' element={<AmbulanceSignup/>}/> 
       <Route path='/ambulance-signin' element={<AmbulanceSignin/>}/>
 
@@ -39,6 +39,7 @@ function App() {
       <Route path='/update-hospital-profile'element={<><Navbar/><UpdateHospitalProfile/></>}/>
 
       <Route  path='/nearby-hospitals' element={<> <Navbar/> <NearbyHospitals/> <Footer/>    </>} />
+      <Route  path ='/nearby-ambulance' element={<><AmbulanceNavbar/><NearbyAmbulances/></>}   />
 
       <Route  path='chat' element={<><Chat></Chat></>} />
 
