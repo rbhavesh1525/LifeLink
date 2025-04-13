@@ -7,6 +7,7 @@ const authroutes = require('./Routes/authRoutes')
 const hospitalRoutes = require('./Routes/HospitalRoutes')
 const doctorRoutes = require('./Routes/DoctorRoutes')
 const locationRoutes = require("./Routes/LocationRoutes");
+const AmbulanceRoutes = require('./Routes/AmbulanceRoutes')
 const cors = require('cors');
 const http = require('http');
 
@@ -51,7 +52,8 @@ app.use(cors());
 app.use('/api/auth',authroutes);
 app.use('/api',doctorRoutes);
 app.use('/api',hospitalRoutes);
-app.use('/api',locationRoutes)
+app.use('/api',locationRoutes);
+app.use('/api/ambulance',AmbulanceRoutes)
 
 
 

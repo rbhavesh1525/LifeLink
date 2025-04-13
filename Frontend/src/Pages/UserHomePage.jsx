@@ -22,7 +22,7 @@ function UserHomepage() {
       icon: <FaAmbulance className="text-4xl text-red-500" />,
       title: "Request Ambulance",
       description: "Quick access to emergency ambulance services",
-      path: "/request-ambulance",
+      path: "/nearby-ambulance",
       btntext : "Book Ambulance",
       color: "bg-red-50"
     },
