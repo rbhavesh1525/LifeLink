@@ -59,7 +59,7 @@ function NearbyAmbulances() {
   const fetchNearbyAmbulances = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/ambulance/nearby-ambulance/${userId}`
+        `http://localhost:5000/api/ambulance/nearby-ambulances/${userId}`
       );
       setAmbulances(res.data);
     } catch (err) {
