@@ -11,7 +11,7 @@ const getMessages = async(req,res) => {
                 {senderId: myId, receiverId:userToChatId},
                 {senderId: userToChatId, receiverId: myId}
             ]
-        })
+        }).sort({ createdAt: 1 }) // Sort messages by time
         res.status(200).json(message)
     } catch (error) {
         console.log("Error in getting messages",error.message);
@@ -25,20 +25,25 @@ const sendMessage = async(req,res) => {
         const {id: receiverId} = req.params
         const senderId = req.user.id
 
+        // Create and save the message
         const newMessage = new Message({
             senderId,
             receiverId,
             text
         })
 
-        await newMessage.save()
+        const savedMessage = await newMessage.save()
 
+        // Emit to receiver via socket
         const receiverSocketId = getReceiverSocketId(receiverId)
 
         if(receiverSocketId){
-            io.to(receiverSocketId).emit("newMessage",newMessage)
+            // Send the complete saved message object with ID
+            io.to(receiverSocketId).emit("newMessage", savedMessage)
         }
-        res.status(201).json(newMessage)
+        
+        // Return the saved message with its ID
+        res.status(201).json(savedMessage)
 
     } catch (error) {
         console.log("Error in sendMessage controller",error.message)
