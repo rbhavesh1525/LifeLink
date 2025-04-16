@@ -128,7 +128,7 @@ function HospitalSignup() {
 
               <div>
                 <label htmlFor="Hospital_Registration_number" className="block text-sm font-medium mb-2">
-                  Registraion Number
+                  Registration Number
                 </label>
                 <input
                   type="text"

@@ -62,19 +62,6 @@ const updateAmbulanceLocation = async (req, res) => {
 
 
 
-// Haversine formula to calculate distance between two coordinates (latitude, longitude)
-function haversine(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Radius of Earth in km
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
-  
-  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c; // Distance in km
-  return distance;
-}
 
 const FindNearbyAmbulance = async (req, res) => {
   try {
@@ -94,27 +81,30 @@ const FindNearbyAmbulance = async (req, res) => {
     // Step 3: Filter ambulances within 5km using Haversine formula
     const nearbyAmbulances = ambulanceLocations.filter(ambulance => {
       const [ambulanceLongitude, ambulanceLatitude] = ambulance.location.coordinates;
-
       const distance = haversine(latitude, longitude, ambulanceLatitude, ambulanceLongitude);
-      return distance <= 5;  // 5 km radius
+      return distance <= 5; // 5 km radius
     });
 
-    // Step 4: Fetch ambulance details using ambulanceId
-    const ambulanceDetails = await Ambulance.find({ ambulanceId: { $in: nearbyAmbulances.map(a => new mongoose.Types.ObjectId(a.ambulanceId)) } });
+    // Step 4: Convert ambulanceId to ObjectId array
+    const ambulanceIds = nearbyAmbulances.map(a => new mongoose.Types.ObjectId(a.ambulanceId));
 
+
+    // Step 5: Fetch ambulance details using ambulanceId
+    const ambulanceDetails = await Ambulance.find({ _id: { $in: ambulanceIds } });
+
+    // Step 6: Merge data
     const result = nearbyAmbulances.map(ambulance => {
       const matched = ambulanceDetails.find(
-        detail => detail._id.toString() === ambulance.ambulanceId.toString()
+        detail => detail._id.toString() === new mongoose.Types.ObjectId(ambulance.ambulanceId).toString()
+
       );
-      console.log("ambulance.ambulanceId:", ambulance.ambulanceId);
-      console.log("typeof ambulance.ambulanceId:", typeof ambulance.ambulanceId);
+
       return {
         ...ambulance.toObject(),
         details: matched || null,
       };
     });
 
-   
     if (result.length === 0) {
       return res.status(404).json({ message: "No nearby ambulances found" });
     }
@@ -127,6 +117,20 @@ const FindNearbyAmbulance = async (req, res) => {
   }
 };
 
+// Helper: Haversine formula to calculate distance
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radius of Earth in km
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * (Math.PI / 180)) *
+    Math.cos(lat2 * (Math.PI / 180)) *
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
 module.exports = FindNearbyAmbulance;
 
 module.exports = {updateStatus,updateAmbulanceLocation,FindNearbyAmbulance}
