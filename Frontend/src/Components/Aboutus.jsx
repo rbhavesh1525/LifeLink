@@ -66,7 +66,7 @@ Reach the right hospital at the right time without delays.
           >
             <div className="w-full lg:w-1/2">
               <img
-                src="https://play-lh.googleusercontent.com/ArenLe0OXwkXw5AgiLIYxum61kzwJHfYHBW8TmrIifAn3auBIrxXpzY-Wzu77GDEe4Jp"
+                src="https://bsmedia.business-standard.com/_media/bs/img/article/2025-01/02/thumb/featurecrop/1200X630/1735821527-7071.jpg"
                 alt="Service 2"
                 className="w-2xl h-60  rounded-lg shadow-xl transition-all duration-500 transform hover:scale-105"
               />

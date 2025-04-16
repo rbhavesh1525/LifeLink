@@ -61,8 +61,6 @@ const updateAmbulanceLocation = async (req, res) => {
 
 
 
-
-
 const FindNearbyAmbulance = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -88,7 +86,6 @@ const FindNearbyAmbulance = async (req, res) => {
     // Step 4: Convert ambulanceId to ObjectId array
     const ambulanceIds = nearbyAmbulances.map(a => new mongoose.Types.ObjectId(a.ambulanceId));
 
-
     // Step 5: Fetch ambulance details using ambulanceId
     const ambulanceDetails = await Ambulance.find({ _id: { $in: ambulanceIds } });
 
@@ -96,9 +93,7 @@ const FindNearbyAmbulance = async (req, res) => {
     const result = nearbyAmbulances.map(ambulance => {
       const matched = ambulanceDetails.find(
         detail => detail._id.toString() === new mongoose.Types.ObjectId(ambulance.ambulanceId).toString()
-
       );
-
       return {
         ...ambulance.toObject(),
         details: matched || null,

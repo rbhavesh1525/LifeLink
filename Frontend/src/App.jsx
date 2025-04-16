@@ -41,7 +41,7 @@ function App() {
       <Route path='/update-hospital-profile'element={<><Navbar/><UpdateHospitalProfile/></>}/>
       <Route path='/user-profile' element={<><UserProfile/></>} />
       <Route  path='/nearby-hospitals' element={<> <Navbar/> <NearbyHospitals/> <Footer/>    </>} />
-      <Route  path ='/nearby-ambulance' element={<><AmbulanceNavbar/><NearbyAmbulances/></>}   />
+      <Route  path ='/nearby-ambulance' element={<><Navbar/><NearbyAmbulances/><Footer/></>}   />
 
       <Route  path='chat' element={<><Chat></Chat></>} />
 
