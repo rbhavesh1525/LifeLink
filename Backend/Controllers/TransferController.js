@@ -1,6 +1,5 @@
 const express = require("express")
 const PatientTransfer = require("../Models/PatientTransfer")
-const { io, getReceiverSocketId } = require("../utils/socket")
 const Hospital = require("../Models/HospitalAuthModel")
 
 const startTransfer = async(req,res) => {
@@ -13,7 +12,7 @@ const startTransfer = async(req,res) => {
             return res.status(400).json({message: "All fields are required"})
         }
 
-        // Get source hospital name for notification
+        // Get source hospital name
         const sourceHospitalData = await Hospital.findById(sourceHospital);
         const sourceHospitalName = sourceHospitalData ? sourceHospitalData.hospitalName : 'Unknown Hospital';
 
@@ -27,15 +26,6 @@ const startTransfer = async(req,res) => {
             destinationHospital
         })
         await newTransfer.save()
-
-        // Send real-time notification to destination hospital
-        const receiverSocketId = getReceiverSocketId(destinationHospital);
-        if (receiverSocketId) {
-            io.to(receiverSocketId).emit("newTransfer", {
-                ...newTransfer._doc,
-                sourceHospitalName
-            });
-        }
 
         res.status(201).json({
             message : "Transfer initiated successfully",
@@ -118,23 +108,6 @@ const updateTransferStatus = async (req, res) => {
         
         if (!transfer) {
             return res.status(404).json({ message: "Transfer not found" });
-        }
-        
-        // Send notification to the other hospital
-        const notifyHospitalId = req.user.id === transfer.sourceHospital._id.toString() 
-            ? transfer.destinationHospital._id 
-            : transfer.sourceHospital._id;
-            
-        const receiverSocketId = getReceiverSocketId(notifyHospitalId);
-        console.log(`Notifying hospital ${notifyHospitalId}, socket ID: ${receiverSocketId}`);
-        
-        if (receiverSocketId) {
-            io.to(receiverSocketId).emit("transferStatusUpdated", {
-                transferId,
-                status,
-                updatedBy: req.user.id,
-                hospitalName: req.user.hospitalName
-            });
         }
         
         res.status(200).json({ 

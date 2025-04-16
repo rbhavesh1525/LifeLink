@@ -21,9 +21,9 @@ function App() {
     <Routes>
 
       <Route path='*' element={<Navigate  to="/"/>}/>
-      <Route path='/'element ={<><Navbar/><UserHomepage/><Footer/></>}/>
+      <Route path='/' element={<SigninAs/>}/>
+      <Route path='/user-homepage'element ={<><Navbar/><UserHomepage/><Footer/></>}/>
       <Route path="/hospital-homepage" element ={<><HospitalNavbar/><HospitalHome/><Footer/></>}/>
-      <Route path='/signing-as' element={<SigninAs/>}/>
 
       <Route path='/user-signup' element={<UserSignup/>}/>
       <Route path='/user-signin' element={<UserSignin/>}/>

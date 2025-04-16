@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 
 const authmiddleware = (req,res,next)=>{
     try {
-        console.log("Auth middleware called");
-        console.log("Authorization header:", req.header('Authorization'));
+        // console.log("Auth middleware called");
+        // console.log("Authorization header:", req.header('Authorization'));
         
         const token = req.header('Authorization')?.split(" ")[1];
 
@@ -12,11 +12,11 @@ const authmiddleware = (req,res,next)=>{
             return res.status(401).json({message: 'No token, authorization denied'});
         }
 
-        console.log("Token found:", token.substring(0, 20) + "...");
+        // console.log("Token found:", token.substring(0, 20) + "...");
 
         // First decode without verification to check the role
         const decodedWithoutVerify = jwt.decode(token);
-        console.log("Decoded token without verification:", decodedWithoutVerify);
+        // console.log("Decoded token without verification:", decodedWithoutVerify);
         
         // Select the appropriate secret key based on role
         let secretKey;
@@ -25,15 +25,15 @@ const authmiddleware = (req,res,next)=>{
             console.log("Using HOSPITAL_SECRET_KEY");
         } else if (decodedWithoutVerify.role === 'ambulance') {
             secretKey = process.env.AMBULANCE_SECRET_KEY;
-            console.log("Using AMBULANCE_SECRET_KEY");
+            // console.log("Using AMBULANCE_SECRET_KEY");
         } else {
             secretKey = process.env.JWT_SECRET_KEY;
-            console.log("Using JWT_SECRET_KEY");
+            // console.log("Using JWT_SECRET_KEY");
         }
 
         // Verify with the correct secret key
         const decoded = jwt.verify(token, secretKey);
-        console.log("Decoded JWT in middleware:", decoded);
+        // console.log("Decoded JWT in middleware:", decoded);
 
         req.user = decoded;
         next();
