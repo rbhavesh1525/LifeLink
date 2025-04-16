@@ -1,7 +1,7 @@
 
 import './App.css'
-import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,Staffinfo,TransferPatient,UpdateBedStatus,UpdateHospitalProfile,DoctorAvailability,SigninAs,HospitalSignin,HospitalSignup,AmbulanceSignin,AmbulanceSignup,AmbulanceHomepage, HospitalChat, Chat, NearbyHospitals,NearbyAmbulances,UserProfile} from "./Pages/PageIndex"
-import {Navbar,AmbulanceNavbar,HospitalNavbar,LandingPage, Aboutus,ContactUs,UserHelp} from "./Components/CompIndex"
+import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,Staffinfo,TransferPatient,UpdateBedStatus,UpdateHospitalProfile,DoctorAvailability,SigninAs,HospitalSignin,HospitalSignup,AmbulanceSignin,AmbulanceSignup,AmbulanceHomepage, HospitalChat, Chat, NearbyHospitals,NearbyAmbulances,UserProfile,Feedback, UserFeedbacks} from "./Pages/PageIndex"
+import {Navbar,AmbulanceNavbar,HospitalNavbar,LandingPage, Aboutus,ContactUs,UserHelp, TrustedBySection} from "./Components/CompIndex"
 import {Routes,Route,BrowserRouter} from "react-router-dom"
 import { ToastContainer } from "react-toastify";
 
@@ -18,7 +18,7 @@ function App() {
     <Routes>
 
       <Route path='*' element={<Navigate  to="/"/>}/>
-      <Route path='/'element ={<><Navbar/><LandingPage/><UserHomepage/><Footer/></>}/>
+      <Route path='/'element ={<><Navbar/><LandingPage/><UserHomepage/><TrustedBySection/><UserFeedbacks/><Footer/></>}/>
       <Route path="/hospital-homepage" element ={<><HospitalNavbar/><HospitalHome/><Footer/></>}/>
       <Route path='/signing-as' element={<SigninAs/>}/>
       <Route  path='/about-us' element={<><Navbar/><Aboutus/><Footer/></>}/> 
@@ -42,6 +42,10 @@ function App() {
       <Route path='/user-profile' element={<><UserProfile/></>} />
       <Route  path='/nearby-hospitals' element={<> <Navbar/> <NearbyHospitals/> <Footer/>    </>} />
       <Route  path ='/nearby-ambulance' element={<><Navbar/><NearbyAmbulances/><Footer/></>}   />
+
+      <Route path='/feedback'  element={<><Feedback/></>} />
+      
+      {/* <Route path='/user-feedbacks' element={<><UserFeedbacks/></>} /> */}
 
       <Route  path='chat' element={<><Chat></Chat></>} />
 
