@@ -46,7 +46,7 @@ function UserHomepage() {
   return (
     <>
     <section  id="homepage" />
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-[50] from-blue-100 to-white">
    
 
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-6 md:px-16 mt-10">

@@ -9,5 +9,6 @@ import UserHelp from "./UserHelp";
 import Aboutus from "./Aboutus";
 import LandingPage from "./Landingpage";
 import ContactUs from "./ContactUs";
+import TrustedBySection from "./TrustedBySection";
 
-export{Navbar,Footer ,AmbulanceNavbar,HospitalNavbar,Loader,LandingPage,Aboutus,ContactUs,UserHelp}
+export{Navbar,Footer ,AmbulanceNavbar,HospitalNavbar,Loader,LandingPage,Aboutus,ContactUs,UserHelp,TrustedBySection}
