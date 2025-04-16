@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import AmbulanceImg from "../assets/Images/AmbulanceImg.jpg"
 import axios from "axios";
 import { Loader2, MapPin, Search, PhoneCall } from "lucide-react";
 
@@ -56,35 +57,43 @@ function NearbyAmbulances() {
 
   console.log(userId)
 
-  const fetchNearbyAmbulances = async () => {
-    try {
-      const res = await axios.get(
-        `http://localhost:5000/api/ambulance/nearby-ambulance/${userId}`
-      );
-      setAmbulances(res.data);
-    } catch (err) {
-      console.log("Error fetching ambulances", err);
-    }
-  };
-
+  useEffect(() => {
+    const fetchNearbyAmbulances = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/api/ambulance/nearby-ambulances/${userId}`
+        );
+  
+        const flattened = res.data.nearbyAmbulances.map((amb) => ({
+          ...amb.details,
+          location: amb.location,
+          distanceKm: amb.distanceKm, // if you add distance later
+        }));
+  
+        setAmbulances(flattened);
+      } catch (err) {
+        console.log("Error fetching ambulances", err);
+      }
+    };
+  
+    fetchNearbyAmbulances();
+  }, [userId]);
+  
   const filteredAmbulances = ambulances.filter((amb) =>
     amb.driverName?.toLowerCase().includes(search.toLowerCase())
-  );
-
-
-
+  )
 
 
 
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       {/* Top Controls */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 ">
         <button
           onClick={updateLocation}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg transition-all duration-200"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg transition-all duration-200 cursor-pointer"
         >
-          <MapPin className="w-5 h-5" />
+          <MapPin className="w-5 h-5 cursor-pointer" />
           {loading ? (
             <>
               <Loader2 className="animate-spin h-5 w-5" />
@@ -109,42 +118,83 @@ function NearbyAmbulances() {
       {error && <p className="text-red-600 font-semibold">{error}</p>}
 
       {/* Nearby Ambulances */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredAmbulances.length === 0 ? (
-          <p className="col-span-full text-center text-gray-600 text-lg">
-            🚑 No ambulances found nearby.
-          </p>
-        ) : (
-          filteredAmbulances.map((ambulance, idx) => (
-            <div
-              key={idx}
-              className="bg-white p-4 rounded-2xl shadow-lg hover:shadow-xl transition"
+      <div className="grid grid-cols-1 gap-6">
+  {filteredAmbulances.length === 0 ? (
+    <p className="text-center text-gray-600 text-lg">
+      🚑 No ambulances found nearby.
+    </p>
+  ) : (
+    filteredAmbulances.map((ambulance, idx) => (
+      <div
+        key={idx}
+        className="flex flex-col sm:flex-row bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
+      >
+        {/* Image Section */}
+        <img
+          src={AmbulanceImg} 
+          alt="Ambulance"
+          className="w-full sm:w-64 h-48 sm:h-auto object-cover"
+        />
+
+        {/* Details Section */}
+        <div className="p-4 flex-1">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-xl font-semibold text-blue-700">
+              {ambulance.driverName || "Unnamed Driver"}
+            </h2>
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-medium ${
+                ambulance.status === "active"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+              }`}
             >
-              <div className="flex justify-between items-center mb-2">
-                <h2 className="text-lg font-semibold text-blue-700">
-                  {ambulance.driverName || "Unnamed Driver"}
-                </h2>
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    ambulance.status === "active"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                  }`}
-                >
-                  {ambulance.status}
-                </span>
-              </div>
-              <p className="text-gray-600 mb-2">
-                <strong>Phone:</strong> {ambulance.phone || "N/A"}
-              </p>
-              <button className="flex items-center gap-2 px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-full text-sm transition">
-                <PhoneCall className="w-4 h-4" />
-                Call Now
-              </button>
-            </div>
-          ))
-        )}
+             {/* {ambulance.status || "Inactive"} */}
+            </span>
+          </div>
+
+          {/* Near You */}
+          <p className="text-green-600 text-sm font-medium mb-2">
+            📍 Available near you
+          </p>
+
+          {/* Info */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-1 text-sm text-gray-700 mb-3">
+            <p>
+              <strong>Type:</strong> {ambulance.ambulanceType || "N/A"}
+            </p>
+            <p>
+              <strong>Number:</strong> {ambulance.ambulanceNumber || "N/A"}
+            </p>
+            <p>
+              <strong>Experience:</strong> {ambulance.driverExperience} yrs
+            </p>
+            <p>
+              <strong>Contact:</strong>{" "}
+              <span className="text-blue-600 font-medium">
+                {ambulance.contactNumber || "Not Available"}
+              </span>
+            </p>
+          </div>
+
+          {/* Call Button */}
+          <button
+            className="mt-2 w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center gap-2 transition-all cursor-pointer"
+            onClick={() =>
+              window.open(`tel:${ambulance.contactNumber}`, "_self")
+            }
+          >
+            <PhoneCall className="w-4 h-4 " />
+            Call Now
+          </button>
+        </div>
       </div>
+    ))
+  )}
+</div>
+
+
     </div>
   );
 }

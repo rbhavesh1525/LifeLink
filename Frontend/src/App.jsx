@@ -1,6 +1,6 @@
 import './App.css'
-import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,Staffinfo,TransferPatient,UpdateBedStatus,UpdateHospitalProfile,DoctorAvailability,SigninAs,HospitalSignin,HospitalSignup,AmbulanceSignin,AmbulanceSignup,AmbulanceHomepage, HospitalChat, Chat, NearbyHospitals,NearbyAmbulances} from "./Pages/PageIndex"
-import {Navbar,AmbulanceNavbar,HospitalNavbar} from "./Components/CompIndex"
+import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,Staffinfo,TransferPatient,UpdateBedStatus,UpdateHospitalProfile,DoctorAvailability,SigninAs,HospitalSignin,HospitalSignup,AmbulanceSignin,AmbulanceSignup,AmbulanceHomepage, HospitalChat, Chat, NearbyHospitals,NearbyAmbulances,UserProfile} from "./Pages/PageIndex"
+import {Navbar,AmbulanceNavbar,HospitalNavbar,LandingPage, Aboutus,ContactUs,UserHelp} from "./Components/CompIndex"
 import {Routes,Route,BrowserRouter} from "react-router-dom"
 import { ToastContainer } from "react-toastify";
 import { SocketProvider } from "./context/SocketContext"
@@ -21,11 +21,21 @@ function App() {
     <Routes>
 
       <Route path='*' element={<Navigate  to="/"/>}/>
+
       <Route path='/' element={<SigninAs/>}/>
       <Route path='/user-homepage'element ={<><Navbar/><UserHomepage/><Footer/></>}/>
       <Route path="/hospital-homepage" element ={<><HospitalNavbar/><HospitalHome/><Footer/></>}/>
 
       <Route path='/user-signup' element={<UserSignup/>}/>
+
+      <Route path='/'element ={<><Navbar/><LandingPage/><UserHomepage/><Footer/></>}/>
+      <Route path="/hospital-homepage" element ={<><HospitalNavbar/><HospitalHome/><Footer/></>}/>
+      <Route path='/signing-as' element={<SigninAs/>}/>
+      <Route  path='/about-us' element={<><Navbar/><Aboutus/><Footer/></>}/> 
+      <Route path='/contact-us' element={<><Navbar/>  <ContactUs/> <Footer/></>} />
+      <Route path='/user-help' element={<><Navbar/> <UserHelp/><Footer/></>}/>     
+       <Route path='/user-signup' element={<UserSignup/>}/>
+
       <Route path='/user-signin' element={<UserSignin/>}/>
       <Route path='/hospital-signup' element={<HospitalSignup/>}/>
       <Route path='/hospital-signin' element={<HospitalSignin/>}/>
@@ -40,11 +50,15 @@ function App() {
       <Route path='/transfer-patient' element={<><Navbar/><TransferPatient/></>}/>
       <Route path='/update-bed-status' element={<><Navbar/><UpdateBedStatus/></>}/>
       <Route path='/update-hospital-profile'element={<><Navbar/><UpdateHospitalProfile/></>}/>
-
+      <Route path='/user-profile' element={<><UserProfile/></>} />
       <Route  path='/nearby-hospitals' element={<> <Navbar/> <NearbyHospitals/> <Footer/>    </>} />
-      <Route  path ='/nearby-ambulance' element={<><AmbulanceNavbar/><NearbyAmbulances/></>}   />
+
+      
       <Route path='/hospital-transfer-request' element={<><HospitalNavbar/><HospitalTransferRequest/><Footer/></>}/>
       <Route path='/hospital-transfer/:hospitalId' element={<><HospitalNavbar/><HospitalTransferChat/><Footer/></>}/>
+
+      <Route  path ='/nearby-ambulance' element={<><Navbar/><NearbyAmbulances/><Footer/></>}   />
+
 
       <Route  path='chat' element={<><Chat></Chat></>} />
 
