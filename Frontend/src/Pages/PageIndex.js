@@ -24,7 +24,8 @@ import HospitalChat from "./HospitalChat";
 import Chat from "./Chat";
 import HospitalTransferRequest from "./HospitalTransferRequest";
 import HospitalTransferChat from "./HospitalTransferChat";
-
+import Feedback from "./Feedback";
+import UserFeedbacks from "./UserFeedbacks";
 
 export {
   HospitalHome,
@@ -48,11 +49,8 @@ export {
   NearbyHospitals, 
   NearbyAmbulances,
   HospitalTransferRequest,
-  HospitalTransferChat
+  HospitalTransferChat,
+  UserProfile,
+  Feedback,
+  UserFeedbacks
 }
-
-import Feedback from "./Feedback";
-import UserFeedbacks from "./UserFeedbacks";
-
-
-export {HospitalHome,UserHomepage, UserSignin, UserSignup, PatientTransferRecords, TransferPatient, Staffinfo, UpdateBedStatus, UpdateHospitalProfile, DoctorAvailability, SigninAs, AmbulanceHomepage, AmbulanceSignin, AmbulanceSignup, HospitalSignin, HospitalSignup , HospitalChat ,Chat , NearbyHospitals , NearbyAmbulances,UserProfile,Feedback,UserFeedbacks }
