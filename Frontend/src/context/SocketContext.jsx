@@ -1,88 +1,73 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
 const SocketContext = createContext();
 
-export const SocketProvider = ({ children }) => {
-  const [socket, setSocket] = useState(null);
-  const [isConnected, setIsConnected] = useState(false);
-  const [onlineUsers, setOnlineUsers] = useState([]);
-
-  useEffect(() => {
-    // Get token for authentication
-    const token = localStorage.getItem('token');
-    if (!token) return;
-
-    // Create socket connection with auth token
-    const newSocket = io('http://localhost:5000', {
-      auth: {
-        token
-      }
-    });
-    
-    // Set up event listeners
-    newSocket.on('connect', () => {
-      console.log('Socket connected with ID:', newSocket.id);
-      setIsConnected(true);
-    });
-
-    newSocket.on('disconnect', () => {
-      console.log('Socket disconnected');
-      setIsConnected(false);
-    });
-
-    newSocket.on('getOnlineUsers', (users) => {
-      console.log('Online users updated:', users);
-      setOnlineUsers(users);
-    });
-
-    newSocket.on('connect_error', (error) => {
-      console.error('Socket connection error:', error);
-    });
-
-    // Store socket in state
-    setSocket(newSocket);
-
-    // Clean up on unmount
-    return () => {
-      console.log('Disconnecting socket...');
-      newSocket.disconnect();
-    };
-  }, []);
-
-  // Send message directly to a recipient
-  const sendMessage = (messageData) => {
-    if (socket) {
-      console.log('Sending message via socket:', messageData);
-      socket.emit('sendMessage', messageData);
-    } else {
-      console.error('Cannot send message: Socket not connected');
-    }
-  };
-
-  // Send transfer notification
-  const sendTransferNotification = (transferData) => {
-    if (socket) {
-      console.log('Sending transfer notification:', transferData);
-      socket.emit('transferInitiated', transferData);
-    } else {
-      console.error('Cannot send transfer notification: Socket not connected');
-    }
-  };
-
-  return (
-    <SocketContext.Provider 
-      value={{ 
-        socket, 
-        isConnected, 
-        onlineUsers, 
-        sendMessage,
-        sendTransferNotification
-      }}
-    >
-      {children}
-    </SocketContext.Provider>
-  );
+export const useSocket = () => {
+    return useContext(SocketContext);
 };
 
-export const useSocket = () => useContext(SocketContext); 
+export const SocketProvider = ({ children }) => {
+    const [socket, setSocket] = useState(null);
+    const [connectedUserId, setConnectedUserId] = useState(null);
+
+    // Cleanup on unmount or socket change
+    useEffect(() => {
+        if (socket) {
+            console.log(`Socket initialized with ID: ${socket.id}`);
+            
+            // Setup connection event listeners
+            socket.on('connect', () => {
+                console.log(`Socket connected successfully with ID: ${socket.id}`);
+                console.log(`Connected as user: ${connectedUserId}`);
+            });
+            
+            socket.on('connect_error', (error) => {
+                console.error('Socket connection error:', error);
+            });
+            
+            socket.on('disconnect', (reason) => {
+                console.log(`Socket disconnected. Reason: ${reason}`);
+            });
+            
+            socket.on('reconnect', (attemptNumber) => {
+                console.log(`Socket reconnected after ${attemptNumber} attempts`);
+            });
+            
+            // Cleanup function
+            return () => {
+                console.log('Disconnecting socket...');
+                socket.disconnect();
+            };
+        }
+    }, [socket, connectedUserId]);
+
+    const connectSocket = (userId) => {
+        if (!userId) {
+            console.error('Cannot connect socket: User ID is missing');
+            return;
+        }
+        
+        console.log(`Connecting socket for user ID: ${userId}`);
+        
+        try {
+            const newSocket = io('http://localhost:5000', {
+                query: { userId },
+                reconnection: true,
+                reconnectionAttempts: 5,
+                reconnectionDelay: 1000,
+            });
+            
+            setSocket(newSocket);
+            setConnectedUserId(userId);
+        } catch (error) {
+            console.error('Error creating socket connection:', error);
+        }
+    };
+
+    return (
+        <SocketContext.Provider value={{ socket, connectSocket, connectedUserId }}>
+            {children}
+        </SocketContext.Provider>
+    );
+}; 

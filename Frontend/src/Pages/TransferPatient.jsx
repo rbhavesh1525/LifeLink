@@ -22,20 +22,32 @@ function TransferPatient() {
     const messagesEndRef = useRef(null);
     const navigate = useNavigate();
     const user = useAuthStore((state) => state.user);
-    const { socket, sendMessage: socketSendMessage } = useSocket();
+    const { socket } = useSocket();
+    
+    // Debug when socket state changes
+    useEffect(() => {
+        console.log('Socket state changed:', socket ? 'connected' : 'disconnected');
+    }, [socket]);
 
     // Listen for new messages from socket
     useEffect(() => {
         if (!socket) return;
 
+        console.log('Setting up newMessage listener in TransferPatient');
+        
         const messageHandler = (message) => {
-            console.log('New message received via socket:', message);
+            console.log('New message received via socket in TransferPatient:', message);
+            console.log('Current selectedHospital:', selectedHospital);
+            console.log('Current user ID:', user?.id);
             
-            // Only add message if it's relevant to the active chat
-            if (selectedHospital && 
-                (message.senderId === selectedHospital || 
-                 message.receiverId === selectedHospital)) {
-                
+            // Determine if the message is for the current conversation (both participants match)
+            const isRelevantMessage = 
+                (message.senderId === selectedHospital && message.receiverId === user?.id) || 
+                (message.senderId === user?.id && message.receiverId === selectedHospital);
+            
+            console.log('Is message relevant to this conversation?', isRelevantMessage);
+            
+            if (selectedHospital && isRelevantMessage) {
                 setMessages((prev) => {
                     // Check if we've already received this message
                     const messageExists = prev.some(
@@ -43,12 +55,19 @@ function TransferPatient() {
                         (m.text === message.text && 
                          m.senderId === message.senderId && 
                          m.receiverId === message.receiverId &&
-                         m.createdAt === message.createdAt)
+                         Math.abs(new Date(m.createdAt) - new Date(message.createdAt)) < 1000)
                     );
                     
-                    if (messageExists) return prev;
+                    if (messageExists) {
+                        console.log('Message already exists in state, not adding');
+                        return prev;
+                    }
+                    
+                    console.log('Adding new message to state');
                     return [...prev, message];
                 });
+            } else {
+                console.log('Message not relevant to current conversation');
             }
         };
 
@@ -57,9 +76,10 @@ function TransferPatient() {
 
         // Cleanup event listener on unmount
         return () => {
+            console.log('Removing newMessage listener in TransferPatient');
             socket.off("newMessage", messageHandler);
         };
-    }, [socket, selectedHospital]);
+    }, [socket, selectedHospital, user]);
 
     // Fetch available hospitals
     useEffect(() => {
@@ -123,7 +143,9 @@ function TransferPatient() {
             const savedMessage = response.data;
             
             // Send through socket with the ID from backend
-            socketSendMessage(savedMessage);
+            if (socket) {
+                socket.emit('sendMessage', savedMessage);
+            }
             
             // Add to local state with the server-generated ID
             setMessages(prev => [...prev, savedMessage]);

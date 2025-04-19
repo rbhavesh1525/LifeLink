@@ -19,7 +19,7 @@ function PatientTransferRecords() {
   const [loadingStatus, setLoadingStatus] = useState(false);
   const [updatingTransferIds, setUpdatingTransferIds] = useState([]);
   const user = useAuthStore((state) => state.user);
-  const { socket, sendMessage } = useSocket();
+  const { socket } = useSocket();
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -41,13 +41,19 @@ function PatientTransferRecords() {
     if (!socket) return;
 
     const messageHandler = (message) => {
-      console.log("Received new message via socket:", message);
+      console.log("Received new message via socket in PatientTransferRecords:", message);
+      console.log("Current activeChatHospital:", activeChatHospital?._id);
+      console.log("Current user ID:", user?.id);
       
-      // Only add message if it's relevant to the active chat
-      if (activeChatHospital && 
-          (message.senderId === activeChatHospital._id || 
-           message.receiverId === activeChatHospital._id)) {
-            
+      // Determine if the message is for the current conversation (both participants match)
+      const isRelevantMessage = activeChatHospital && (
+        (message.senderId === activeChatHospital._id && message.receiverId === user?.id) || 
+        (message.senderId === user?.id && message.receiverId === activeChatHospital._id)
+      );
+      
+      console.log('Is message relevant to this conversation?', isRelevantMessage);
+      
+      if (isRelevantMessage) {
         setMessages((prev) => {
           // Check if we've already received this message
           const messageExists = prev.some(
@@ -55,14 +61,19 @@ function PatientTransferRecords() {
             (m.text === message.text && 
              m.senderId === message.senderId && 
              m.receiverId === message.receiverId &&
-             m.createdAt === message.createdAt)
+             Math.abs(new Date(m.createdAt) - new Date(message.createdAt)) < 1000)
           );
           
-          if (messageExists) return prev;
+          if (messageExists) {
+            console.log('Message already exists in state, not adding');
+            return prev;
+          }
+          
+          console.log('Adding new message to state');
           return [...prev, message];
         });
       } else {
-        console.log("Message not for current chat");
+        console.log("Message not relevant to current chat");
       }
     };
 
@@ -73,7 +84,7 @@ function PatientTransferRecords() {
     return () => {
       socket.off("newMessage", messageHandler);
     };
-  }, [socket, activeChatHospital]); // Add activeChatHospital as dependency
+  }, [socket, activeChatHospital, user]); // Added user to dependencies
 
   // Additional socket listener for transfer status updates
   useEffect(() => {
@@ -184,13 +195,6 @@ function PatientTransferRecords() {
     if (!newMessage.trim() || !activeChatHospital) return;
 
     try {
-      const messageData = {
-        text: newMessage,
-        senderId: user.id,
-        receiverId: activeChatHospital._id,
-        createdAt: new Date().toISOString()
-      };
-
       // First send to backend to get an ID
       const response = await axios.post(`/api/messages/${activeChatHospital._id}`, { text: newMessage });
       
@@ -198,7 +202,11 @@ function PatientTransferRecords() {
       const savedMessage = response.data;
       
       // Send through socket with the ID from backend
-      sendMessage(savedMessage);
+      if (socket) {
+        socket.emit('sendMessage', savedMessage);
+      } else {
+        console.error('Socket not connected - cannot send real-time notification');
+      }
       
       // Add to local state with the server-generated ID
       setMessages(prev => [...prev, savedMessage]);

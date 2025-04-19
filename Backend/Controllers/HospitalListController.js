@@ -23,12 +23,12 @@ const getAllHospitals = async (req, res) => {
 // Get all hospitals - no authentication required
 const getPublicHospitals = async (req, res) => {
   try {
-    console.log("getPublicHospitals controller called");
+    // console.log("getPublicHospitals controller called");
     
     // Find all hospitals
     const hospitals = await Hospital.find({}).select('hospitalName email contactNumber location specialities');
     
-    console.log(`Found ${hospitals.length} hospitals for public endpoint`);
+    // console.log(`Found ${hospitals.length} hospitals for public endpoint`);
     res.status(200).json(hospitals);
   } catch (error) {
     console.error('Error fetching public hospitals:', error);

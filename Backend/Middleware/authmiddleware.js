@@ -22,7 +22,7 @@ const authmiddleware = (req,res,next)=>{
         let secretKey;
         if (decodedWithoutVerify.role === 'hospital') {
             secretKey = process.env.HOSPITAL_SECRET_KEY;
-            console.log("Using HOSPITAL_SECRET_KEY");
+            // console.log("Using HOSPITAL_SECRET_KEY");
         } else if (decodedWithoutVerify.role === 'ambulance') {
             secretKey = process.env.AMBULANCE_SECRET_KEY;
             // console.log("Using AMBULANCE_SECRET_KEY");

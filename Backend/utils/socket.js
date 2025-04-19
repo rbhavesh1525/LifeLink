@@ -1,7 +1,6 @@
 const {Server} = require("socket.io")
 const http = require("http")
 const express = require("express")
-const jwt = require("jsonwebtoken")
 
 const app = express()
 const server = http.createServer(app)
@@ -15,59 +14,68 @@ const io = new Server(server, {
 
 const userSocketMap = {}
 
-// Socket middleware for authentication
-io.use((socket, next) => {
-    try {
-        const token = socket.handshake.auth.token;
-        if (!token) {
-            return next(new Error("Authentication token not provided"));
-        }
-
-        // Verify token (adjust secret key to match your JWT secret)
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        socket.userId = decoded.id;
-        next();
-    } catch (error) {
-        console.error("Socket authentication error:", error.message);
-        next(new Error("Authentication failed"));
-    }
-});
-
 function getReceiverSocketId(userId){
     return userSocketMap[userId]
 }
 
 io.on("connection",(socket) => {
     console.log("A user Connected", socket.id);
-    const userId = socket.userId;
+    
+    // Get userId from query parameters
+    const userId = socket.handshake.query.userId;
     
     if(userId) {
         userSocketMap[userId] = socket.id;
         console.log(`User ${userId} connected with socket ${socket.id}`);
+        
+        // Emit online users to all clients
+        io.emit("getOnlineUsers", Object.keys(userSocketMap));
     }
     
-    // Emit online users to all clients
-    io.emit("getOnlineUsers", Object.keys(userSocketMap));
-
-    // Listen for chat messages
+    // Direct messaging between users
     socket.on("sendMessage", (messageData) => {
+        console.log("Socket message received:", messageData);
         const receiverSocketId = getReceiverSocketId(messageData.receiverId);
         if (receiverSocketId) {
+            console.log(`Sending message to socket ID: ${receiverSocketId}`);
             io.to(receiverSocketId).emit("newMessage", messageData);
+        } else {
+            console.log(`Receiver socket not found for user ID: ${messageData.receiverId}`);
         }
     });
 
-    // Listen for transfer notifications
+    // Transfer notifications
     socket.on("transferInitiated", (transferData) => {
+        console.log("Transfer initiated:", transferData);
         const receiverSocketId = getReceiverSocketId(transferData.destinationHospital);
         if (receiverSocketId) {
             io.to(receiverSocketId).emit("newTransfer", transferData);
         }
     });
 
+    // Support for room-based chat (legacy)
+    socket.on("join_room",(data)=>{
+        socket.join(data); 
+        console.log(`User with id: ${socket.id} joined room: ${data}`)
+    });
+
+    socket.on("send_message",(data)=>{
+        console.log("Room message:", data)
+        socket.to(data.room).emit("receive_message", data)
+    });
+
     socket.on("disconnect", () => {
         console.log("A user disconnected", socket.id);
-        delete userSocketMap[userId];
+        
+        // Find and remove the user from userSocketMap
+        for (const [id, socketId] of Object.entries(userSocketMap)) {
+            if (socketId === socket.id) {
+                delete userSocketMap[id];
+                console.log(`User ${id} disconnected and removed from socket map`);
+                break;
+            }
+        }
+        
         io.emit("getOnlineUsers", Object.keys(userSocketMap));
     });
 });

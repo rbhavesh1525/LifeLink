@@ -3,6 +3,7 @@ import axios from "axios";
 import { showToast } from "../Components/Toast";
 import useAuthStore from "../Store/authStore";
 import { useNavigate } from "react-router-dom";
+import { useSocket } from "../context/SocketContext";
 
 function HospitalSignin() {
   const [message, setMessage] = useState("");
@@ -13,6 +14,7 @@ function HospitalSignin() {
 
   const { login } = useAuthStore();
   const navigate = useNavigate();
+  const { connectSocket } = useSocket();
 
   const handleSignin = async (e) => {
     e.preventDefault();
@@ -27,7 +29,10 @@ function HospitalSignin() {
       console.log("Signin successful:", response.data);
       const userData = response.data.user;
 
-      login(response.data.user, response.data.token,response.data.user.id, userData); 
+      login(response.data.user, response.data.token, response.data.user.id, userData); 
+      
+      // Initialize socket connection with user ID
+      connectSocket(response.data.user.id);
      
       showToast(" 🎉 Signin Successful!", "success");
       setMessage("Redirecting you to homepage");
