@@ -1,6 +1,11 @@
 import './App.css'
+
 import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,Staffinfo,TransferPatient,UpdateBedStatus,UpdateHospitalProfile,DoctorAvailability,SigninAs,HospitalSignin,HospitalSignup,AmbulanceSignin,AmbulanceSignup,AmbulanceHomepage, Chat, NearbyHospitals,NearbyAmbulances,UserProfile,Feedback, UserFeedbacks} from "./Pages/PageIndex"
-import {Navbar,AmbulanceNavbar,HospitalNavbar,LandingPage, Aboutus,ContactUs,UserHelp, TrustedBySection} from "./Components/CompIndex"
+
+
+
+import {Navbar,AmbulanceNavbar,HospitalNavbar,LandingPage, Aboutus,ContactUs,UserHelp, TrustedBySection,HeartbeatLoader} from "./Components/CompIndex"
+
 import {Routes,Route,BrowserRouter} from "react-router-dom"
 import { ToastContainer } from "react-toastify";
 import { SocketProvider } from "./context/SocketContext"
@@ -53,6 +58,7 @@ function App() {
       <Route  path ='/nearby-ambulance' element={<><Navbar/><NearbyAmbulances/><Footer/></>}   />
 
       <Route path='/feedback'  element={<><Feedback/></>} />
+      <Route path='/loader'  element={<><HeartbeatLoader/></>}/>
       
       {/* <Route path='/user-feedbacks' element={<><UserFeedbacks/></>} /> */}
 

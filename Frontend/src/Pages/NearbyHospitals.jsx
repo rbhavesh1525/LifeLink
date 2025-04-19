@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaBed, FaUserMd, FaSpinner, FaTimes, FaHospital, FaAngleDown, FaAngleUp } from "react-icons/fa";
 
+import HeartbeatLoader from "../Components/HeartbeatLoader";
+
 const NearbyHospitals = () => {
   const [location, setLocation] = useState(null);
   const [error, setError] = useState(null);
@@ -172,7 +174,8 @@ const NearbyHospitals = () => {
         </h2>
 
         {loadingHospitals ? (
-          <p className="text-gray-500">Loading nearby hospitals...</p>
+          <p className="text-gray-500"><HeartbeatLoader/></p>
+         
         ) : filteredHospitals.length === 0 ? (
           <p className="text-gray-500">No hospitals found.</p>
         ) : (

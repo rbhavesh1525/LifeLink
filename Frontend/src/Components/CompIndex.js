@@ -11,4 +11,6 @@ import LandingPage from "./Landingpage";
 import ContactUs from "./ContactUs";
 import TrustedBySection from "./TrustedBySection";
 
-export{Navbar,Footer ,AmbulanceNavbar,HospitalNavbar,Loader,LandingPage,Aboutus,ContactUs,UserHelp,TrustedBySection}
+import HeartbeatLoader from "./HeartbeatLoader";
+
+export{Navbar,Footer ,AmbulanceNavbar,HospitalNavbar,Loader,LandingPage,Aboutus,ContactUs,UserHelp,TrustedBySection,HeartbeatLoader};
