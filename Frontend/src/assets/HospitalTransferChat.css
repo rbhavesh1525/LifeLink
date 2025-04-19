@@ -1,0 +1,207 @@
+.hospital-transfer-chat-container {
+  display: flex;
+  min-height: 85vh;
+  margin: 20px;
+}
+
+.transfer-chat-sidebar {
+  flex: 1;
+  padding: 15px;
+  border-right: 1px solid #e0e0e0;
+  overflow-y: auto;
+  max-height: 85vh;
+  background-color: #f9f9f9;
+}
+
+.chat-main {
+  flex: 2;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  height: 85vh;
+}
+
+.back-button {
+  padding: 8px 12px;
+  background-color: #f1f1f1;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.back-button:hover {
+  background-color: #e0e0e0;
+}
+
+.selected-hospital-info {
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background-color: white;
+  margin-bottom: 20px;
+}
+
+.specialities ul {
+  padding-left: 20px;
+  margin: 5px 0;
+}
+
+.transfer-toggle-btn {
+  padding: 10px 15px;
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px;
+  width: 100%;
+  font-weight: bold;
+}
+
+.transfer-toggle-btn:hover {
+  background-color: #3367d6;
+}
+
+.transfer-form {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background-color: white;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.form-group textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+.transfer-submit-btn {
+  padding: 10px 15px;
+  background-color: #34a853;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+}
+
+.transfer-submit-btn:hover {
+  background-color: #2d9249;
+}
+
+.messages-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.no-messages {
+  text-align: center;
+  color: #888;
+  margin-top: 20px;
+  font-style: italic;
+}
+
+.message {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 18px;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+.sent {
+  align-self: flex-end;
+  background-color: #dcf8c6;
+  margin-left: auto;
+}
+
+.received {
+  align-self: flex-start;
+  background-color: #f1f0f0;
+  margin-right: auto;
+}
+
+.message p {
+  margin: 0;
+}
+
+.message small {
+  font-size: 0.7rem;
+  color: #888;
+  display: block;
+  text-align: right;
+  margin-top: 3px;
+}
+
+.message-form {
+  display: flex;
+  margin-top: 15px;
+}
+
+.message-form input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.message-form button {
+  padding: 10px 15px;
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.loading, .error {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 18px;
+}
+
+.error {
+  color: #ea4335;
+}
+
+@media (max-width: 768px) {
+  .hospital-transfer-chat-container {
+    flex-direction: column;
+  }
+  
+  .transfer-chat-sidebar, .chat-main {
+    max-height: none;
+    height: auto;
+  }
+} 

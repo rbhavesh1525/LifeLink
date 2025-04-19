@@ -20,11 +20,16 @@ import UserProfile from "../Components/UserProfile";
 import NearbyHospitals from "./NearbyHospitals";
 import NearbyAmbulances from "./NearbyAmbulances";
 
-import HospitalChat from "./HospitalChat"
+// import HospitalChat from "./HospitalChat";
 import Chat from "./Chat";
-
+// import HospitalTransferRequest from "./HospitalTransferRequest";
+// import HospitalTransferChat from "./HospitalTransferChat";
 import Feedback from "./Feedback";
 import UserFeedbacks from "./UserFeedbacks";
 
 
-export {HospitalHome,UserHomepage, UserSignin, UserSignup, PatientTransferRecords, TransferPatient, Staffinfo, UpdateBedStatus, UpdateHospitalProfile, DoctorAvailability, SigninAs, AmbulanceHomepage, AmbulanceSignin, AmbulanceSignup, HospitalSignin, HospitalSignup , HospitalChat ,Chat , NearbyHospitals , NearbyAmbulances,UserProfile,Feedback,UserFeedbacks }
+
+
+
+export {HospitalHome,UserHomepage, UserSignin, UserSignup, PatientTransferRecords, TransferPatient, Staffinfo, UpdateBedStatus, UpdateHospitalProfile, DoctorAvailability, SigninAs, AmbulanceHomepage, AmbulanceSignin, AmbulanceSignup, HospitalSignin, HospitalSignup  ,Chat , NearbyHospitals , NearbyAmbulances,UserProfile,Feedback,UserFeedbacks }
+

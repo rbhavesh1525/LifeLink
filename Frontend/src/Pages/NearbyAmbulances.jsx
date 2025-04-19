@@ -36,7 +36,7 @@ function NearbyAmbulances() {
             fetchNearbyAmbulances(latitude, longitude); // Fetch ambulances right after
           } catch (apiErr) {
             console.error("API Error while saving location:", apiErr);
-            setError("❌ Failed to save location");
+            // setError("❌ Failed to save location");
           }
 
           setLoading(false);

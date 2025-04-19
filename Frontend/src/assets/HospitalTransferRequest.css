@@ -1,0 +1,162 @@
+.hospital-transfer-container {
+  display: flex;
+  min-height: 85vh;
+  margin: 20px;
+}
+
+.hospitals-list {
+  flex: 2;
+  padding: 15px;
+  overflow-y: auto;
+  max-height: 85vh;
+}
+
+.chat-sidebar {
+  flex: 1;
+  border-left: 1px solid #e0e0e0;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  height: 85vh;
+  background-color: #f9f9f9;
+}
+
+.hospital-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: white;
+}
+
+.hospital-card:hover {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.hospital-card.selected {
+  border: 2px solid #4285f4;
+  background-color: #f5f9ff;
+  box-shadow: 0 5px 15px rgba(66, 133, 244, 0.2);
+}
+
+.available-specialities ul {
+  padding-left: 20px;
+  margin: 5px 0;
+}
+
+.messages-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.no-messages {
+  text-align: center;
+  color: #888;
+  margin-top: 20px;
+  font-style: italic;
+}
+
+.message {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 18px;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+.sent {
+  align-self: flex-end;
+  background-color: #dcf8c6;
+  margin-left: auto;
+}
+
+.received {
+  align-self: flex-start;
+  background-color: #f1f0f0;
+  margin-right: auto;
+}
+
+.message p {
+  margin: 0;
+}
+
+.message small {
+  font-size: 0.7rem;
+  color: #888;
+  display: block;
+  text-align: right;
+  margin-top: 3px;
+}
+
+.message-form {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.message-form input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.message-form button {
+  padding: 10px 15px;
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.transfer-request-btn {
+  padding: 12px;
+  background-color: #34a853;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.transfer-request-btn:hover {
+  background-color: #2d9249;
+}
+
+.loading, .error {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 18px;
+}
+
+.error {
+  color: #ea4335;
+}
+
+@media (max-width: 768px) {
+  .hospital-transfer-container {
+    flex-direction: column;
+  }
+  
+  .hospitals-list, .chat-sidebar {
+    max-height: none;
+    height: auto;
+  }
+  
+  .chat-sidebar {
+    border-left: none;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 20px;
+  }
+} 
