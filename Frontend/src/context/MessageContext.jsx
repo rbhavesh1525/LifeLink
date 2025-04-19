@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useSocket } from './SocketContext';
 
@@ -13,6 +13,9 @@ export const ChatProvider = ({ children }) => {
     const [chats, setChats] = useState([]);
     const [messages, setMessages] = useState([]);
     const [users, setUsers] = useState([]);
+    // Initialize with empty notifications array
+    const [notifications, setNotifications] = useState([]);
+    const [transferUpdates, setTransferUpdates] = useState([]);
     const { socket } = useSocket();
 
     // Get token from localStorage since we use that for authentication
@@ -78,6 +81,79 @@ export const ChatProvider = ({ children }) => {
             }
         }
     };
+    
+    const sendTransferNotification = async (transferData) => {
+        try {
+            // Call transfer API endpoint
+            const response = await axios.post(`/api/transfers/start/${transferData.destinationHospitalId}`, transferData);
+            console.log('Transfer request initiated:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error sending transfer notification:', error);
+            if (error.response?.status === 401) {
+                localStorage.removeItem('token');
+                window.location.href = '/signin-as';
+            }
+            throw error;
+        }
+    };
+    
+    // Function to update transfer status
+    const updateTransferStatus = async (transferId, status) => {
+        try {
+            const response = await axios.put(`/api/transfers/update/${transferId}`, { status });
+            console.log('Transfer status updated:', response.data);
+            
+            // Update local state to reflect the change immediately
+            setTransferUpdates(prev => {
+                // Check if we already have this transfer update
+                const exists = prev.some(update => update.transferId === transferId);
+                
+                if (exists) {
+                    // Update existing status
+                    return prev.map(update => 
+                        update.transferId === transferId 
+                            ? { ...update, status, updatedAt: new Date() } 
+                            : update
+                    );
+                } else {
+                    // Add new status update
+                    return [...prev, { 
+                        transferId, 
+                        status, 
+                        updatedAt: new Date() 
+                    }];
+                }
+            });
+            
+            return response.data;
+        } catch (error) {
+            console.error('Error updating transfer status:', error);
+            if (error.response?.status === 401) {
+                localStorage.removeItem('token');
+                window.location.href = '/signin-as';
+            }
+            throw error;
+        }
+    };
+    
+    // Function to mark notification as read - using useCallback to prevent recreation
+    const markNotificationAsRead = useCallback((notificationId) => {
+        console.log(`Marking notification as read: ${notificationId}`);
+        
+        setNotifications(prevNotifications => {
+            const updatedNotifications = prevNotifications.map(notification => {
+                if (notification.id === notificationId) {
+                    console.log(`Found notification ${notificationId}, marking as read`);
+                    return { ...notification, read: true };
+                }
+                return notification;
+            });
+            
+            console.log('Updated notifications:', updatedNotifications);
+            return updatedNotifications;
+        });
+    }, []);
 
     useEffect(() => {
         if (socket) {
@@ -106,31 +182,94 @@ export const ChatProvider = ({ children }) => {
                     return prevMessages;
                 });
             });
+            
+            // Listen for transfer notifications
+            socket.on('newTransfer', (transferData) => {
+                console.log('New transfer notification received:', transferData);
+                
+                // Add to notifications state
+                setNotifications(prev => [
+                    ...prev, 
+                    { 
+                        id: transferData._id || Date.now(), 
+                        type: 'transfer',
+                        data: transferData,
+                        read: false,
+                        timestamp: new Date()
+                    }
+                ]);
+            });
+            
+            // Listen for transfer status updates
+            socket.on('transferStatusUpdated', (updateData) => {
+                console.log('Transfer status update received:', updateData);
+                
+                // Add status update notification
+                setNotifications(prev => [
+                    ...prev,
+                    {
+                        id: `status-${updateData.transferId}-${Date.now()}`,
+                        type: 'transferStatus',
+                        data: updateData,
+                        read: false,
+                        timestamp: new Date()
+                    }
+                ]);
+                
+                // Also update the transfer updates state
+                setTransferUpdates(prev => {
+                    // Check if we already have this transfer update
+                    const exists = prev.some(update => update.transferId === updateData.transferId);
+                    
+                    if (exists) {
+                        // Update existing status
+                        return prev.map(update => 
+                            update.transferId === updateData.transferId 
+                                ? { ...update, status: updateData.status, updatedAt: updateData.updatedAt } 
+                                : update
+                        );
+                    } else {
+                        // Add new status update
+                        return [...prev, { 
+                            transferId: updateData.transferId, 
+                            status: updateData.status, 
+                            updatedAt: updateData.updatedAt 
+                        }];
+                    }
+                });
+            });
 
             // Cleanup
             return () => {
                 socket.off('newMessage');
+                socket.off('newTransfer');
+                socket.off('transferStatusUpdated');
             };
         }
     }, [socket, selectedChat, hospitalId]);
 
+    const contextValue = {
+        selectedChat,
+        setSelectedChat,
+        chats,
+        setChats,
+        messages,
+        setMessages,
+        users,
+        setUsers,
+        notifications,
+        transferUpdates,
+        fetchChats,
+        fetchMessages,
+        sendMessage,
+        sendTransferNotification,
+        updateTransferStatus,
+        markNotificationAsRead
+    };
+
     return (
-        <ChatContext.Provider
-            value={{
-                selectedChat,
-                setSelectedChat,
-                chats,
-                setChats,
-                messages,
-                setMessages,
-                users,
-                setUsers,
-                fetchChats,
-                fetchMessages,
-                sendMessage
-            }}
-        >
+        <ChatContext.Provider value={contextValue}>
             {children}
         </ChatContext.Provider>
     );
-}; 
+};
