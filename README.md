@@ -31,6 +31,10 @@ server/ # Backend (Express + MongoDB + Socket.io)
 ├── models/
 ├── routes/
 ├── sockets/
+├── Middlware/
+├── Dbconfig/
+├── Uploads/
+
 
 
 
