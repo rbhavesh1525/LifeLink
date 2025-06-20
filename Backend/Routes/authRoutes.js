@@ -2,6 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const upload = require('../Middleware/upload');
+const authmiddleware = require("../Middleware/authmiddleware")
 
 
 const {UserSignin, UserSignup,registerHospital,loginHospital,registerAmbulance,loginAmbulance} = require('../Controllers/authController')
