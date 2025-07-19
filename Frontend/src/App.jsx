@@ -4,15 +4,17 @@ import {HospitalHome,UserHomepage,UserSignup,UserSignin,PatientTransferRecords,S
 
 
 
-import {Navbar,AmbulanceNavbar,HospitalNavbar,LandingPage, Aboutus,ContactUs,UserHelp, TrustedBySection,HeartbeatLoader} from "./Components/CompIndex"
+import {AmbulanceNavbar,LandingPage, Aboutus,ContactUs,UserHelp, TrustedBySection,HeartbeatLoader} from "./Components/CompIndex"
 
 import {Routes,Route,BrowserRouter} from "react-router-dom"
 import { ToastContainer } from "react-toastify";
 import { SocketProvider } from "./context/SocketContext"
 import { ChatProvider } from "./context/MessageContext"
 
-import Footer from './Components/Footer'
 import { Navigate } from "react-router-dom";
+import UserLayout from './layouts/UserLayout';
+import HospitalLayout from './layouts/HospitalLayout';
+import AmbulanceLayout from './layouts/AmbulanceLayout';
 // import HospitalTransferRequest from './Pages/HospitalTransferRequest'
 // import HospitalTransferChat from './Pages/HospitalTransferChat'
 
@@ -24,38 +26,52 @@ function App() {
     <SocketProvider>
     <ChatProvider>
     <Routes>
-
+      {/*Public Routes*/}
       <Route path='*' element={<Navigate  to="/"/>}/>
-      <Route path='/'element ={<><Navbar/><LandingPage/><UserHomepage/><TrustedBySection/><UserFeedbacks/><Footer/></>}/>
-      <Route path="/hospital-homepage" element ={<><HospitalNavbar/><HospitalHome/><Footer/></>}/>
-      <Route path='/signing-as' element={<SigninAs/>}/>
-      <Route  path='/about-us' element={<><Navbar/><Aboutus/><Footer/></>}/> 
-      <Route path='/contact-us' element={<><Navbar/>  <ContactUs/> <Footer/></>} />
-      <Route path='/user-help' element={<><Navbar/> <UserHelp/><Footer/></>}/>     
-       <Route path='/user-signup' element={<UserSignup/>}/>
-
+      <Route path='/' element={<SigninAs/>}/>
+      {/*User public Routes*/}
+      <Route path='/user-signup' element={<UserSignup/>}/>
       <Route path='/user-signin' element={<UserSignin/>}/>
+      {/*Hospital public Routes*/}
       <Route path='/hospital-signup' element={<HospitalSignup/>}/>
       <Route path='/hospital-signin' element={<HospitalSignin/>}/>
-      {/* <Route path='/hospital-chat' element={<><HospitalChat/></>}/> */}
-     < Route path='/ambulance-homepage'  element={<><AmbulanceNavbar/><AmbulanceHomepage/></>} />
+      {/*Ambulance public Routes*/}
       <Route path='/ambulance-signup' element={<AmbulanceSignup/>}/> 
       <Route path='/ambulance-signin' element={<AmbulanceSignin/>}/>
 
-      <Route path='/doctor-availability' element={<><Navbar/><DoctorAvailability/></>}/>
-      <Route path='/patient-transfer-records' element={<><Navbar/><PatientTransferRecords/></>}/>
-      <Route path='/staff-info' element={<><Navbar/><Staffinfo/></>}/>
-      <Route path='/transfer-patient' element={<><Navbar/><TransferPatient/></>}/>
-      <Route path='/update-bed-status' element={<><Navbar/><UpdateBedStatus/></>}/>
-      <Route path='/update-hospital-profile'element={<><Navbar/><UpdateHospitalProfile/></>}/>
-      <Route path='/user-profile' element={<><UserProfile/></>} />
-      <Route  path='/nearby-hospitals' element={<> <Navbar/> <NearbyHospitals/> <Footer/>    </>} />
+
+      {/*User Private Routes*/}
+      <Route path='/user-homepage'element ={<UserLayout><LandingPage/><UserHomepage/><TrustedBySection/><UserFeedbacks/></UserLayout>}/>
+      <Route  path='/about-us' element={<UserLayout><Aboutus/></UserLayout>}/> 
+      <Route path='/contact-us' element={<UserLayout>  <ContactUs/> </UserLayout>} />
+      <Route path='/user-help' element={<UserLayout> <UserHelp/></UserLayout>}/>     
+      <Route path='/user-profile' element={<UserLayout><UserProfile/></UserLayout>} />
+      <Route  path='/nearby-hospitals' element={<UserLayout> <NearbyHospitals/>    </UserLayout>} />
+      <Route  path ='/nearby-ambulance' element={<UserLayout><NearbyAmbulances/></UserLayout>}   />
+
+
+
+      {/*Hospital Private Routes*/}
+      <Route path="/hospital-homepage" element ={<HospitalLayout><HospitalHome/></HospitalLayout>}/>
+      <Route path='/patient-transfer-records' element={<HospitalLayout><PatientTransferRecords/></HospitalLayout>}/>
+      <Route path='/doctor-availability' element={<HospitalLayout><DoctorAvailability/></HospitalLayout>}/>
+      <Route path='/staff-info' element={<HospitalLayout><Staffinfo/></HospitalLayout>}/>
+      <Route path='/transfer-patient' element={<HospitalLayout><TransferPatient/></HospitalLayout>}/>
+      <Route path='/update-bed-status' element={<HospitalLayout><UpdateBedStatus/></HospitalLayout>}/>
+      <Route path='/update-hospital-profile'element={<HospitalLayout><UpdateHospitalProfile/></HospitalLayout>}/>
+
+      
+      {/*Ambulance Private Routes*/}
+     < Route path='/ambulance-homepage'  element={<AmbulanceLayout><AmbulanceHomepage/></AmbulanceLayout>} />
+
+      {/* <Route path='/hospital-chat' element={<><HospitalChat/></>}/> */}
+
+
 
       
       {/* <Route path='/hospital-transfer-request' element={<><HospitalNavbar/><HospitalTransferRequest/><Footer/></>}/> */}
       {/* <Route path='/hospital-transfer/:hospitalId' element={<><HospitalNavbar/><HospitalTransferChat/><Footer/></>}/> */}
 
-      <Route  path ='/nearby-ambulance' element={<><Navbar/><NearbyAmbulances/><Footer/></>}   />
 
       <Route path='/feedback'  element={<><Feedback/></>} />
       <Route path='/loader'  element={<><HeartbeatLoader/></>}/>

@@ -1,7 +1,7 @@
 const express = require("express")
 const PatientTransfer = require("../Models/PatientTransfer")
 const Hospital = require("../Models/HospitalAuthModel")
-const {getReceiverSocketId, io} = require("../utils/socket.js")
+// Removed: const {getReceiverSocketId, io} = require("../utils/socket.js")
 
 const startTransfer = async(req,res) => {
     try {
@@ -28,15 +28,7 @@ const startTransfer = async(req,res) => {
         })
         await newTransfer.save()
 
-        // Get the socket ID for the destination hospital
-        const receiverSocketId = getReceiverSocketId(destinationHospital)
-        
-        if(receiverSocketId){
-            console.log(`Sending transfer notification to hospital ${destinationHospital} with socket ID ${receiverSocketId}`)
-            io.to(receiverSocketId).emit("newTransfer", newTransfer)
-        } else {
-            console.log(`Destination hospital ${destinationHospital} is not online, notification will not be delivered in real-time`)
-        }
+        // Removed: Socket notification logic
 
         res.status(201).json({
             message : "Transfer initiated successfully",
@@ -121,18 +113,7 @@ const updateTransferStatus = async (req, res) => {
             return res.status(404).json({ message: "Transfer not found" });
         }
         
-        // Notify the source hospital about the status change
-        const sourceHospitalId = transfer.sourceHospital._id.toString();
-        const sourceSocketId = getReceiverSocketId(sourceHospitalId);
-        
-        if (sourceSocketId) {
-            console.log(`Notifying source hospital ${sourceHospitalId} about transfer status change to ${status}`);
-            io.to(sourceSocketId).emit("transferStatusUpdated", {
-                transferId: transfer._id,
-                status: status,
-                updatedAt: new Date()
-            });
-        }
+        // Removed: Socket notification logic
         
         res.status(200).json({ 
             message: `Transfer status updated to ${status}`,

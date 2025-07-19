@@ -1,4 +1,4 @@
-import Navbar from "./Navbar";
+import UserNavbar from "./UserNavbar";
 import Footer from "./Footer";
 
 import AmbulanceNavbar from "./AmbulanceNavbar";
@@ -13,4 +13,4 @@ import TrustedBySection from "./TrustedBySection";
 
 import HeartbeatLoader from "./HeartbeatLoader";
 
-export{Navbar,Footer ,AmbulanceNavbar,HospitalNavbar,Loader,LandingPage,Aboutus,ContactUs,UserHelp,TrustedBySection,HeartbeatLoader};
+export{UserNavbar,Footer ,AmbulanceNavbar,HospitalNavbar,Loader,LandingPage,Aboutus,ContactUs,UserHelp,TrustedBySection,HeartbeatLoader};
