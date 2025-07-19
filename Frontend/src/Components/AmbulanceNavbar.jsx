@@ -17,7 +17,7 @@ function AmbulanceNavbar() {
     logout();
     showToast("Logout successfully");
     setIsLogin(false);
-    navigate("/ambulance-homepage");
+    navigate("/");
   };
 
   return (

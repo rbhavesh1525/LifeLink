@@ -48,23 +48,6 @@ function Navbar() {
     }
   };
 
-  // Get the appropriate home page link based on user type
-  const getHomePageLink = () => {
-    if (!user) return "/";
-    
-    // Check user type based on role
-    switch (user.role) {
-      case "hospital":
-        return "/hospital-homepage";
-      case "ambulance":
-        return "/ambulance-homepage";
-      case "user":
-        return "/user-homepage";
-      default:
-        return "/";
-    }
-  };
-
   return (
     <nav className="bg-white border-b border-gray-300 px-6 py-5 flex justify-between items-center shadow-sm">
     {/* Logo Section */}
@@ -77,7 +60,7 @@ function Navbar() {
   
     {/* Search + Nav Links */}
    
-      {/* Sexy Search Bar */}
+      {/*Search Bar */}
       <div
         className={`w-72 lg:w-96 flex  gap-3 px-0.5 py-0.5 rounded-full transition-all duration-300 mr-4  ${
           isFocused
@@ -103,7 +86,7 @@ function Navbar() {
       <ul className="flex space-x-8 text-gray-700 font-semibold pr-9">
         <li 
           className="cursor-pointer text-gray-800 hover:text-gray-900"
-          onClick={() => navigate(getHomePageLink())}
+          onClick={() => navigate("/user-homepage")}
         >
           Home
         </li>
